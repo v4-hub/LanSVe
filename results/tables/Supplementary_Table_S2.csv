@@ -1,0 +1,41 @@
+﻿Köppen-Geiger climate classification,,,Environmental Context: Climate zone
+ID,Type1,Type2,Merged_Type
+1,Af,"Tropical, rainforest",Tropical
+2,Am,"Tropical, monsoon",Tropical
+3,Aw,"Tropical, savannah",Tropical
+4,BWh,"Arid, desert, hot",Arid
+5,BWk,"Arid, desert, cold",Arid
+6,BSh,"Arid, steppe, hot",Arid
+7,BSk,"Arid, steppe, cold",Arid
+8,Csa,"Temperate, dry summer, hot summer",Temperate
+9,Csb,"Temperate, dry summer, warm summer",Temperate
+10,Csc,"Temperate, dry summer, cold summer",Temperate
+11,Cwa,"Temperate, dry winter, hot summer",Temperate
+12,Cwb,"Temperate, dry winter, warm summer",Temperate
+13,Cwc,"Temperate, dry winter, cold summer",Temperate
+14,Cfa,"Temperate, no dry season, hot summer",Temperate
+15,Cfb,"Temperate, no dry season, warm summer",Temperate
+16,Cfc,"Temperate, no dry season, cold summer",Temperate
+17,Dsa,"Cold, dry summer, hot summer",Cold
+18,Dsb,"Cold, dry summer, warm summer",Cold
+19,Dsc,"Cold, dry summer, cold summer",Cold
+20,Dsd,"Cold, dry summer, very cold winter",Cold
+21,Dwa,"Cold, dry winter, hot summer",Cold
+22,Dwb,"Cold, dry winter, warm summer",Cold
+23,Dwc,"Cold, dry winter, cold summer",Cold
+24,Dwd,"Cold, dry winter, very cold winter",Cold
+25,Dfa,"Cold, no dry season, hot summer",Cold
+26,Dfb,"Cold, no dry season, warm summer",Cold
+27,Dfc,"Cold, no dry season, cold summer",Cold
+28,Dfd,"Cold, no dry season, very cold winter",Cold
+29,ET,"Polar, tundra",Polar
+30,EF,"Polar, frost",Polar
+,,,
+,,,
+,,,
+Environmental Context: season,,,
+Months,Season,,
+"12, 01, 02",Winter,,
+"03, 04, 05",Spring,,
+"06, 07, 08",Summer,,
+"09, 10, 11",Fall,,
