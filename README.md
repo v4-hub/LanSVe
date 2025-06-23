@@ -44,7 +44,7 @@ To reproduce the results of this study, please follow the steps below in order.
 
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/[YourUsername]/LanSVeg.git
+    git clone https://github.com/v4-hub/LanSVeg.git
     cd LanSVeg
     ```
 2.  **Google Drive Setup:** Upload the `code` and `data` directories to your Google Drive. The Python scripts are configured to read from and write to Google Drive from within Google Colab.
@@ -53,12 +53,12 @@ To reproduce the results of this study, please follow the steps below in order.
 
 The following scripts must be run in **Google Colab**.
 
-1.  **Open and run `01_google_earth_engine_vegetation_indices.py`:**
+1.  **Open and run `01_vegetation_extraction.py`:**
     - This script will process the primary landslide inventory (`data/glc_merged_landslide_point.csv`).
     - **Important:** You may need to update the file paths at the top of the script (`Config` class) to match the location in your Google Drive.
     - It will generate a file named `landslide_with_vegetation_indices.csv` containing the landslide points annotated with pre-event vegetation indices.
 
-2.  **Open and run `02_google_earth_engine_landcover_forest.py`:**
+2.  **Open and run `02_landcover_extraction.py`:**
     - This script also processes the primary landslide inventory.
     - **Important:** Check and update file paths in the `Config` class as needed.
     - It will generate `landslide_landcover_forest_data.csv`, containing land cover and forest characteristics for each landslide point.
