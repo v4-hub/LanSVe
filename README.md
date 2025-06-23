@@ -6,21 +6,6 @@ This repository contains the full code and primary data necessary to reproduce t
 
 Our framework leverages the Google Earth Engine (GEE) platform for large-scale geospatial data acquisition and the R programming language for in-depth statistical analysis and visualization. This repository is intended to provide complete transparency and facilitate the reproduction of our results by the scientific community.
 
-## Repository Structure
-The repository is organized to clearly separate code, data, and results, following best practices for reproducible research.
-LanSVeg/
-├── code/
-│   ├── 01_google_earth_engine_vegetation_indices.py
-│   ├── 02_google_earth_engine_landcover_forest.py
-│   └── 03_Data_analysis_final.R
-├── data/
-│   └── glc_merged_landslide_point.csv
-├── results/
-│   ├── figures/
-│   ├── tables/
-│   └── data/
-└── README.md
-
 ## System Requirements & Dependencies
 
 ### 1. Google Earth Engine (Python)
