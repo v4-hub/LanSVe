@@ -1,4 +1,4 @@
-# LanSVeg: Code and Data for "The Nonlinear Relationship Between Vegetation Indices and Landslide Hazard"
+# LanSVeg: Code and Data for "The vegetation paradox predicts global landslide risk"
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
