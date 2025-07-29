@@ -1,13 +1,13 @@
 # -------------------------------------------------------------------------
-# The Nonlinear Relationship Between Vegetation Indices and Landslide Hazard: A Study Exceeding Nature Communications Standards
-# Multi-Source Remote Sensing Data-Driven Risk Threshold Discovery and Global Validation Framework
-# Expert-Level Analysis: Landslide Mechanisms + Vegetation Remote Sensing + Journal Editor's Perspective
+# 植被指数与滑坡灾害的非线性关系：超越Nature Communications标准的卓越研究
+# 多源遥感数据驱动的风险阈值发现与全球验证框架
+# 专家级分析：滑坡机理 + 植被遥感 + 期刊编辑视角
 # -------------------------------------------------------------------------
 
 # =========================================================================
-# 1. Environment Setup and Core Libraries
+# 1. 环境设置与核心库
 # =========================================================================
-# Load core libraries and check versions
+# 核心库加载与版本检查
 required_packages <- c(
   "ggplot2", "dplyr", "segmented", "randomForest", "viridis", "scales",
   "rnaturalearth", "rnaturalearthdata", "sf", "pdp", "tidyr", "patchwork",
@@ -24,11 +24,11 @@ for(pkg in required_packages) {
   }
 }
 
-# Function to check available system fonts
+# 检查系统可用字体的函数
 check_available_fonts <- function() {
   available_fonts <- systemfonts::system_fonts()
   
-  # Check for Nature-recommended fonts
+  # 检查Nature推荐的字体
   nature_fonts <- available_fonts %>% 
     filter(str_detect(family, "Arial|Helvetica|Times|Calibri")) %>% 
     dplyr::select(family, style) %>% 
@@ -37,11 +37,11 @@ check_available_fonts <- function() {
   return(nature_fonts)
 }
 
-# Get the best available font
+# 获取最佳可用字体
 get_best_nature_font <- function() {
   available_fonts <- systemfonts::system_fonts()$family
   
-  # Font priority for Nature journals
+  # Nature期刊字体优先级
   font_priority <- c("Arial", "Helvetica", "Calibri", "Times New Roman", "Times")
   
   for(font in font_priority) {
@@ -52,20 +52,20 @@ get_best_nature_font <- function() {
   }
   
   cat("⚠ Using default sans-serif font\n")
-  return("")  # An empty string lets R use the default font
+  return("")  # 空字符串让R使用默认字体
 }
 
-# Check available fonts
+# 检查可用字体
 cat("Available Nature-style fonts on your system:\n")
 print(check_available_fonts())
 
-# Get the best font
+# 获取最佳字体
 best_font <- get_best_nature_font()
 
 # =========================================================================
-# Set up directories for saving results
+# 设置保存结果的目录
 # Define the base directory
-base_dir <- "V5"
+base_dir <- "V5.2"
 
 # Define the subdirectories
 sub_dirs <- c("figures", "tables", "data")
@@ -77,28 +77,28 @@ for (sub_dir in sub_dirs) {
 }
 # =========================================================================
 # -------------------------------------------------------------------------
-# Professional Academic Visual System (Nature-series Journal Standard)
+# 专业学术视觉系统（Nature系列期刊标准）
 # -------------------------------------------------------------------------
 
-# Professional Color Palettes for Nature Communications
+# Nature Communications专业配色体系
 nature_palettes <- list(
-  # Main findings palette (based on Nature journal guidelines)
+  # 主要发现配色（基于Nature期刊指南）
   biophysical_zones = c(
-    "IDZ" = "#0173B2",      # Blue: Low risk (Initial Disturbance Zone)
-    "BTZ" = "#DE8F05",      # Orange: Transition Zone
-    "CTZ" = "#CC78BC",      # Purple: High risk (Critical Transition Zone)
-    "SDZ" = "#029E73",      # Green: Post-peak (Stabilization/Decline Zone)
-    "Very High NDVI" = "#56B4E9", # Light Blue: Very high vegetation
-    "Unknown" = "#999999"         # Grey: Unknown
+    "IDZ" = "#0173B2",      # 蓝色：低风险
+    "BTZ" = "#DE8F05", # 橙色：过渡期
+    "CTZ" = "#CC78BC",      # 紫色：高风险区（突出显示）
+    "SDZ" = "#029E73",      # 绿色：后峰值
+    "Very High NDVI" = "#56B4E9",      # 浅蓝：极高植被
+    "Unknown" = "#999999"              # 灰色：未知
   ),
   
-  # Professional palette for vegetation indices
+  # 植被指数专业配色
   indices = c(
     "NDVI" = "#1B9E77", "EVI" = "#D95F02", 
     "LAI" = "#7570B3", "FPAR" = "#E7298A"
   ),
   
-  # Scientific palette for climate zones
+  # 气候带科学配色
   climate = c(
     "Temperate" = "#2166AC",
     "Mediterranean/Subtropical" = "#762A83", 
@@ -106,7 +106,7 @@ nature_palettes <- list(
     "Other" = "#9970AB"
   ),
   
-  # Ecological palette for vegetation types
+  # 植被类型生态学配色
   vegetation = c(
     "Forest" = "#1A5490", "Woody" = "#4292C6", "Non-Forest" = "#C994C7",
     "Evergreen Broadleaf Forests" = "#08519C",
@@ -118,20 +118,20 @@ nature_palettes <- list(
   )
 )
 
-# Professional Academic Theme (Strictly Adhering to Nature Guidelines)
-# Optimized Nature theme
+# 专业学术主题（严格遵循Nature指南）
+# 优化后的Nature主题（基于你的原有主题）
 nature_theme_professional <- theme_minimal(base_size = 10, base_family = best_font) +
   theme(
-    # Font settings - ensure all text elements use the correct font
+    # 字体设置 - 确保所有文本元素都使用正确字体
     text = element_text(family = best_font),
     
-    # Grid and border settings
+    # 网格和边框
     panel.grid.minor = element_blank(),
     panel.grid.major = element_line(color = "#F0F0F0", linewidth = 0.25),
     panel.border = element_rect(fill = NA, color = "#CCCCCC", linewidth = 0.5),
     panel.background = element_rect(fill = "white", color = NA),
     
-    # Legend settings
+    # 图例设置
     legend.position = "right",
     legend.title = element_text(face = "bold", size = 9, family = best_font),
     legend.text = element_text(size = 8, family = best_font),
@@ -139,32 +139,32 @@ nature_theme_professional <- theme_minimal(base_size = 10, base_family = best_fo
     legend.background = element_rect(fill = "white", color = NA),
     legend.key = element_rect(fill = "white", color = NA),
     
-    # Title settings
+    # 标题设置
     plot.title = element_text(size = 11, face = "bold", color = "#000000", family = best_font),
     plot.subtitle = element_text(size = 9, color = "#666666", family = best_font),
     plot.caption = element_text(size = 7, color = "#666666", hjust = 0, family = best_font),
     
-    # Axis settings - conforming to Nature standards
+    # 坐标轴设置 - 符合Nature标准
     axis.title = element_text(size = 9, face = "bold", color = "#333333", family = best_font),
     axis.text = element_text(size = 8, color = "#666666", family = best_font),
     axis.ticks = element_line(color = "#CCCCCC", linewidth = 0.25),
-    axis.line = element_line(color = "#000000", linewidth = 0.3),  # Axis lines preferred by Nature
+    axis.line = element_line(color = "#000000", linewidth = 0.3),  # Nature喜欢的轴线
     
-    # Facet settings
+    # 分面设置
     strip.text = element_text(size = 9, face = "bold", color = "#333333", family = best_font),
     strip.background = element_rect(fill = "#F5F5F5", color = "#CCCCCC"),
     
-    # Tag settings (important for annotations)
+    # 标签设置（对annotate很重要）
     plot.tag = element_text(size = 11, face = "bold", family = best_font),
     
-    # Margin settings
+    # 边距设置
     plot.margin = ggplot2::margin(10, 15, 10, 10, "pt"),
     
-    # Ensure a clean background
+    # 确保背景干净
     plot.background = element_rect(fill = "white", color = NA)
   )
 
-# Create a safe annotate function to avoid font warnings
+# 为了避免字体警告，创建一个安全的annotate函数
 safe_annotate <- function(geom, ..., family = best_font) {
   if (geom == "text") {
     annotate(geom, ..., family = family)
@@ -175,22 +175,22 @@ safe_annotate <- function(geom, ..., family = best_font) {
   }
 }
 
-# Print information about the currently used font
+# 打印当前使用的字体信息
 cat("\n=== Font Configuration ===\n")
 cat("Selected font for Nature theme:", best_font, "\n")
 cat("This font will be used for all text elements in your plots.\n")
 
-# Utility functions
+# 工具函数
 saveFigure <- function(plot, filename, width = 8, height = 6, dpi = 600) {
-  # Main figure saving
+  # 主图保存
   full_filename <- file.path(base_dir, "figures", paste0(filename, ".png"))
   ggsave(full_filename, plot, width = width, height = height, dpi = dpi, bg = "white")
   
-  # High-resolution version (for journal submission)
+  # 高分辨率版本（用于期刊提交）
   hr_filename <- file.path(base_dir, "figures", paste0(filename, ".tiff"))
   ggsave(hr_filename, plot, width = width, height = height, dpi = 600, bg = "white", device = "tiff")
   
-  # Data export
+  # 数据导出
   if(!is.null(plot$data)) {
     data_filename <- file.path(base_dir, "data", paste0(filename, "_data.csv"))
     tryCatch({
@@ -215,10 +215,10 @@ saveTable <- function(data, filename) {
 }
 
 # -------------------------------------------------------------------------
-# Data Loading and Professional Preprocessing
+# 数据加载与专业预处理
 # -------------------------------------------------------------------------
 
-# Smart Data Loading
+# 智能数据加载
 load_landslide_data <- function() {
   possible_files <- c(
     "merged_landslide_data_add_climatezone.csv",
@@ -238,12 +238,12 @@ load_landslide_data <- function() {
 
 landslide_data <- load_landslide_data()
 
-# Data Preprocessing and Quality Control - Enhanced Multi-Source Vegetation Data Handling
+# 数据预处理与质量控制 - 强化多源植被数据处理
 preprocess_data <- function(data) {
   cat("Starting data preprocessing...\n")
   cat("Original data dimensions:", dim(data), "\n")
   
-  # Date processing
+  # 日期处理
   if("Event_Date" %in% colnames(data)) {
     data$Event_Date <- as.Date(data$Event_Date)
     data$Year <- as.numeric(format(data$Event_Date, "%Y"))
@@ -256,9 +256,9 @@ preprocess_data <- function(data) {
     )
   }
   
-  # Geographic classification (based on the Köppen-Geiger climate classification)
-  
-  # Continent classification
+  # 地理分类（基于最新气候分类标准Köppen-Geiger climate classification）
+
+  # Continent分类
   data$Continent <- case_when(
     data$Longitude >= -170 & data$Longitude <= -30 & 
       data$Latitude >= 15 & data$Latitude <= 90 ~ "North America",
@@ -272,15 +272,15 @@ preprocess_data <- function(data) {
     TRUE ~ "Other"
   )
   
-  # ========== Enhanced Multi-Source Vegetation Data Handling ==========
+  # ========== 强化多源植被数据处理 ==========
   
-  # 1. Basic cleaning and standardization of three data sources
-  # MODIS IGBP classification processing
+  # 1. 三种数据源的基本清洗和标准化
+  # MODIS IGBP分类处理
   if("MODIS_IGBP" %in% colnames(data)) {
-    # Ensure data is character type
+    # 确保数据为字符型
     data$MODIS_IGBP <- as.character(data$MODIS_IGBP)
     
-    # Create standardized classification
+    # 创建标准化分类
     data$MODIS_IGBP_Class_Clean <- case_when(
       is.na(data$MODIS_IGBP) | data$MODIS_IGBP == "" | data$MODIS_IGBP == "0" ~ "Unknown",
       data$MODIS_IGBP == "1" ~ "Evergreen Needleleaf Forest",
@@ -303,7 +303,7 @@ preprocess_data <- function(data) {
       TRUE ~ as.character(data$MODIS_IGBP)
     )
     
-    # Create simplified classification system (for later comparison)
+    # 创建简化分类系统（用于后续比较）
     data$MODIS_IGBP_Simplified <- case_when(
       grepl("Forest", data$MODIS_IGBP_Class_Clean) ~ "Forest",
       grepl("Shrub|Savanna", data$MODIS_IGBP_Class_Clean) ~ "Woody Vegetation",
@@ -316,7 +316,7 @@ preprocess_data <- function(data) {
       TRUE ~ "Other"
     )
     
-    # Create forest density levels (for comparison)
+    # 创建森林密度等级（用于比较）
     data$MODIS_Forest_Density <- case_when(
       data$MODIS_IGBP_Simplified != "Forest" ~ "Non-forest",
       grepl("Evergreen", data$MODIS_IGBP_Class_Clean) ~ "Dense Forest",
@@ -326,12 +326,12 @@ preprocess_data <- function(data) {
     )
   }
   
-  # Copernicus LC classification processing
+  # Copernicus LC分类处理
   if("Copernicus_LC" %in% colnames(data)) {
-    # Ensure data is character type
+    # 确保数据为字符型
     data$Copernicus_LC <- as.character(data$Copernicus_LC)
     
-    # Create standardized classification
+    # 创建标准化分类
     data$Copernicus_LC_Class_Clean <- case_when(
       is.na(data$Copernicus_LC) | data$Copernicus_LC == "" ~ "Unknown",
       data$Copernicus_LC == "111" ~ "Closed Forest, Evergreen Needle Leaf",
@@ -359,7 +359,7 @@ preprocess_data <- function(data) {
       TRUE ~ as.character(data$Copernicus_LC)
     )
     
-    # Create simplified classification system (for later comparison)
+    # 创建简化分类系统（用于后续比较）
     data$Copernicus_LC_Simplified <- case_when(
       grepl("Forest", data$Copernicus_LC_Class_Clean) ~ "Forest",
       grepl("Shrubland", data$Copernicus_LC_Class_Clean) ~ "Woody Vegetation",
@@ -372,7 +372,7 @@ preprocess_data <- function(data) {
       TRUE ~ "Other"
     )
     
-    # Create forest density levels (for comparison)
+    # 创建森林密度等级（用于比较）
     data$Copernicus_Forest_Density <- case_when(
       data$Copernicus_LC_Simplified != "Forest" ~ "Non-forest",
       grepl("Closed Forest", data$Copernicus_LC_Class_Clean) ~ "Dense Forest",
@@ -381,12 +381,12 @@ preprocess_data <- function(data) {
     )
   }
   
-  # Hansen forest cover processing
+  # Hansen森林覆盖处理
   if("Hansen_Tree_Cover_2000_Percent" %in% colnames(data)) {
-    # Ensure data is numeric type
+    # 确保数据为数值型
     data$Hansen_Tree_Cover_2000_Percent <- as.numeric(as.character(data$Hansen_Tree_Cover_2000_Percent))
     
-    # Create forest cover classification
+    # 创建森林覆盖分类
     data$Hansen_Forest_Class_Clean <- case_when(
       is.na(data$Hansen_Tree_Cover_2000_Percent) ~ "Unknown",
       data$Hansen_Tree_Cover_2000_Percent == 0 ~ "No forest",
@@ -396,7 +396,7 @@ preprocess_data <- function(data) {
       data$Hansen_Tree_Cover_2000_Percent > 75 ~ "Very dense forest"
     )
     
-    # Create simplified classification system (for later comparison)
+    # 创建简化分类系统（用于后续比较）
     data$Hansen_Simplified <- case_when(
       data$Hansen_Forest_Class_Clean %in% c("Dense forest", "Very dense forest") ~ "Forest",
       data$Hansen_Forest_Class_Clean %in% c("Moderate forest", "Sparse forest") ~ "Woody Vegetation",
@@ -405,7 +405,7 @@ preprocess_data <- function(data) {
       TRUE ~ "Other"
     )
     
-    # Retain detailed forest cover classification
+    # 保留详细的森林覆盖度分级（保持原代码）
     data$Forest_Cover_Category <- case_when(
       is.na(data$Hansen_Tree_Cover_2000_Percent) ~ "Unknown",
       data$Hansen_Tree_Cover_2000_Percent == 0 ~ "No Forest (0%)",
@@ -420,9 +420,9 @@ preprocess_data <- function(data) {
                                                     "Dense (51-75%)", "Very Dense (>75%)", "Unknown"))
   }
   
-  # 2. Create multi-source consistency metrics
+  # 2. 创建多源一致性指标
   if(all(c("MODIS_IGBP_Simplified", "Hansen_Simplified") %in% colnames(data))) {
-    # Consistency between MODIS and Hansen
+    # MODIS与Hansen的一致性
     data$MODIS_Hansen_Consistency <- ifelse(
       data$MODIS_IGBP_Simplified == "Unknown" | data$Hansen_Simplified == "Unknown",
       "Unknown",
@@ -431,7 +431,7 @@ preprocess_data <- function(data) {
   }
   
   if(all(c("MODIS_IGBP_Simplified", "Copernicus_LC_Simplified") %in% colnames(data))) {
-    # Consistency between MODIS and Copernicus
+    # MODIS与Copernicus的一致性
     data$MODIS_Copernicus_Consistency <- ifelse(
       data$MODIS_IGBP_Simplified == "Unknown" | data$Copernicus_LC_Simplified == "Unknown",
       "Unknown",
@@ -440,7 +440,7 @@ preprocess_data <- function(data) {
   }
   
   if(all(c("Copernicus_LC_Simplified", "Hansen_Simplified") %in% colnames(data))) {
-    # Consistency between Copernicus and Hansen
+    # Copernicus与Hansen的一致性
     data$Copernicus_Hansen_Consistency <- ifelse(
       data$Copernicus_LC_Simplified == "Unknown" | data$Hansen_Simplified == "Unknown",
       "Unknown",
@@ -448,20 +448,20 @@ preprocess_data <- function(data) {
     )
   }
   
-  # 3. Create a composite three-source consistency score
+  # 3. 创建三源综合一致性评分
   if(all(c("MODIS_IGBP_Simplified", "Copernicus_LC_Simplified", "Hansen_Simplified") %in% colnames(data))) {
-    # Calculate consistency score (0-3)
+    # 计算一致性评分 (0-3)
     data$Multi_Source_Consistency_Score <- apply(
       data[, c("MODIS_IGBP_Simplified", "Copernicus_LC_Simplified", "Hansen_Simplified")], 
       1, 
       function(x) {
         if(any(x == "Unknown")) return(NA)
         unique_values <- length(unique(x))
-        return(4 - unique_values)  # 3: Full agreement, 2: Partial agreement, 1: No agreement
+        return(4 - unique_values)  # 3: 完全一致, 2: 两种一致, 1: 都不一致
       }
     )
     
-    # Create consistency labels
+    # 创建一致性标签
     data$Multi_Source_Consistency_Label <- case_when(
       is.na(data$Multi_Source_Consistency_Score) ~ "Unknown",
       data$Multi_Source_Consistency_Score == 3 ~ "Full Agreement",
@@ -470,7 +470,7 @@ preprocess_data <- function(data) {
     )
   }
   
-  # 4. Create a unified vegetation type label (Priority: MODIS > Copernicus > Hansen)
+  # 4. 创建统一的植被类型标签（优先级: MODIS > Copernicus > Hansen）
   data$Unified_Vegetation_Type <- case_when(
     "MODIS_IGBP_Simplified" %in% colnames(data) & !is.na(data$MODIS_IGBP_Simplified) & 
       data$MODIS_IGBP_Simplified != "Unknown" ~ data$MODIS_IGBP_Simplified,
@@ -481,7 +481,7 @@ preprocess_data <- function(data) {
     TRUE ~ "Unknown"
   )
   
-  # Calculate rate of change for vegetation indices
+  # 植被指数变化率计算
   if(all(c("NDVI_1", "NDVI_change_1_to_2") %in% colnames(data))) {
     data <- data %>%
       mutate(
@@ -493,7 +493,7 @@ preprocess_data <- function(data) {
       )
   }
   
-  # Data quality report
+  # 数据质量报告
   cat("Processed data dimensions:", dim(data), "\n")
   cat("Vegetation data sources availability:\n")
   cat("  - MODIS IGBP: ", sum(!is.na(data$MODIS_IGBP_Class_Clean) & 
@@ -522,8 +522,8 @@ preprocess_data <- function(data) {
 
 landslide_data <- preprocess_data(landslide_data)
 
-# Filter out data where "Climate_Zone" is "Polar", Copernicus_LC_Class is "Permanent water bodies",
-# or MODIS_IGBP_Class is "Water Bodies"
+# 筛选出 "Climate_Zone" 不为 "Polar", Copernicus_LC_Class不为"Permanent water bodies"
+# 且MODIS_IGBP_Class不为"Water Bodies"的数据
 landslide_data <- landslide_data[
   !(landslide_data$Climate_Zone == "Polar" |
       landslide_data$Copernicus_LC_Class == "Permanent water bodies" |
@@ -534,11 +534,11 @@ saveTable(landslide_data,"landslide_data_processed")
 
 
 # -------------------------------------------------------------------------
-# MAIN FIGURE 1: Data-Driven Threshold Discovery and Risk Zone Identification
+# MAIN FIGURE 1: 数据驱动阈值发现与风险区识别
 # -------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------
-# MAIN FIGURE 1: Data Analysis and Supplementary Material Generation
+# MAIN FIGURE 1: 数据分析与补充材料生成
 # -------------------------------------------------------------------------
 
 # <<< NEW SECTION START >>>
@@ -710,10 +710,10 @@ analyze_vegetation_thresholds <- function(data) {
   cat("\n=== (Full Workflow) Analyzing Vegetation Thresholds & Generating Supplementary Materials ===\n")
   
   # ===================================================================
-  # Internal Helper Functions
+  # 内部辅助函数 (Internal Helper Functions)
   # ===================================================================
   
-  # --- Helper Function 1: Supplementary Density Plot ---
+  # --- 辅助函数 1: 补充密度图 ---
   create_supplementary_density_plot <- function(plot_data, ndvi_breakpoints) {
     cat("  - Generating Supplementary Figure: NDVI Kernel Density Plot...\n")
     p <- ggplot(plot_data, aes(x = NDVI_1)) +
@@ -727,7 +727,7 @@ analyze_vegetation_thresholds <- function(data) {
     cat("  ✓ Supplementary Figure saved.\n")
   }
   
-  # --- Helper Function 2: Supplementary Cross-Index Consistency Table (Optimized) ---
+  # --- 辅助函数 2: 补充交叉一致性表格 (优化版) ---
   analyze_cross_index_consistency <- function(data_with_zones, all_results) {
     cat("  - Generating Supplementary Table: Cross-Index Consistency...\n")
     temp_data <- data_with_zones %>%
@@ -739,13 +739,14 @@ analyze_vegetation_thresholds <- function(data) {
         TRUE ~ "SDZ"
       )) %>%
       filter(!is.na(NDVI_Biophysical_Zone), !is.na(EVI_Zone), NDVI_Biophysical_Zone != "Unknown") %>%
-      # Standardize factor levels
+      # 将因子级别统一
       mutate(
         NDVI_Zone_Simple = gsub(" Zone", "", as.character(NDVI_Biophysical_Zone)),
         EVI_Zone_Simple = gsub(" Zone", "", EVI_Zone)
       )
     
-    # Using `janitor` package's `tabyl` and `adorn_totals` is the cleanest, warning-free method
+    # 使用 `janitor` 包的 `tabyl` 和 `adorn_totals` 是最简洁、无警告的方法
+    # 确保安装了 janitor: if(!require(janitor)) install.packages("janitor")
     if(!require(janitor)) install.packages("janitor", quiet = TRUE); library(janitor)
     
     consistency_table <- temp_data %>%
@@ -755,17 +756,17 @@ analyze_vegetation_thresholds <- function(data) {
       adorn_pct_formatting(digits = 1) %>% # Format as percentages
       adorn_ns(position = "front") # Add counts (n) in front of percentages
     
-    # Convert janitor table to a standard data frame and save
+    # 将janitor表格转换为标准数据框并保存
     consistency_df <- as.data.frame(consistency_table)
     saveTable(consistency_df, "Supplementary_Table_1b_NDVI_EVI_Consistency")
     cat("  ✓ Cross-index consistency table saved.\n")
   }
   
   # ===================================================================
-  # Main Analysis Workflow
+  # 主分析流程 (Main Analysis Workflow)
   # ===================================================================
   
-  # --- 1. Perform core breakpoint analysis ---
+  # --- 1. 执行核心断点分析 ---
   indices_to_analyze <- c("NDVI_1", "EVI_1", "LAI_1")
   available_indices <- indices_to_analyze[indices_to_analyze %in% colnames(data)]
   if(length(available_indices) == 0) stop("None of the specified vegetation indices were found.")
@@ -778,7 +779,7 @@ analyze_vegetation_thresholds <- function(data) {
     analysis_results[[idx]] <- result
   }
   
-  # --- 2. Define risk zones and add to the data ---
+  # --- 2. 定义风险区并添加到数据中 ---
   if("NDVI_1" %in% names(analysis_results)) {
     ndvi_result <- analysis_results[["NDVI_1"]]
     bp1 <- ndvi_result$breakpoints[1]
@@ -796,13 +797,13 @@ analyze_vegetation_thresholds <- function(data) {
     cat("  ✓ NDVI-based biophysical zones defined and added to data.\n")
   }
   
-  # --- 3. Call helper functions to generate supplementary materials ---
-  # Note: we pass the modified `data` object to the helper functions
+  # --- 3. 调用辅助函数生成补充材料 ---
+  # (注意：我们将修改后的`data`对象传递给辅助函数)
   if("NDVI_1" %in% names(analysis_results)) {
     create_supplementary_density_plot(data, analysis_results[["NDVI_1"]]$breakpoints)
   }
   if(all(c("NDVI_1", "EVI_1") %in% names(analysis_results))) {
-    # Pass the data that now includes the NDVI_Biophysical_Zone column
+    # 传递已包含NDVI_Biophysical_Zone列的数据
     analyze_cross_index_consistency(data, analysis_results)
   }
   
@@ -831,10 +832,10 @@ create_figure_1_plots <- function(analysis_results, processed_data) {
     x_range <- range(df$x, na.rm = TRUE)
     x_span <- diff(x_range)
     
-    # Define plotting boundaries - increase buffer space to keep points/lines away from the frame
+    # 定义绘图边界 - 增加边界距离以保持点线与图框的距离
     plot_xlim <- c(x_range[1] - 0.08*x_span, x_range[2] + 0.08*x_span)
     
-    # For NDVI/EVI, use a slightly expanded range
+    # 对于 NDVI/EVI，使用稍微扩展的范围
     if(idx %in% c("NDVI_1", "EVI_1")) {
       plot_xlim <- c(-0.05, 1.05) 
     }
@@ -854,7 +855,7 @@ create_figure_1_plots <- function(analysis_results, processed_data) {
     r2_pos_y <- 0.95 * y_max
     r2_hjust <- ifelse(idx == "LAI_1", 1, 0)
     
-    # Start building the plot
+    # 开始构建图形
     p <- ggplot(df, aes(x = x, y = y)) +
       geom_point(alpha = 0.4, color = "grey50", size = 0.8) +
       geom_line(data = pred_data_extended, aes(x = x, y = y), 
@@ -866,31 +867,31 @@ create_figure_1_plots <- function(analysis_results, processed_data) {
                label = bquote(R^2 == .(sprintf("%.3f", result$r_squared))), 
                hjust = r2_hjust, size = 3.2, fontface = "bold")
     
-    # Use the effective confidence interval shading method
+    # 【修正】使用旧代码中有效的置信区间阴影方法
     cat(sprintf("Debug: Adding confidence intervals for %s\n", idx))
     if(nrow(conf_int) >= 1) {
       for(i in 1:min(2, nrow(conf_int))) {
-        # Ensure confidence interval limits are in the correct order
+        # 确保置信区间的上下限顺序正确
         ci_lower <- min(conf_int[i, 1], conf_int[i, 2])
         ci_upper <- max(conf_int[i, 1], conf_int[i, 2])
         
         cat(sprintf("  BP%d: CI [%.3f, %.3f]\n", i, ci_lower, ci_upper))
         
-        # Use the geom_polygon method
+        # 使用 geom_polygon 方法（来自旧代码）
         conf_data <- data.frame(
           x = c(ci_lower, ci_upper, ci_upper, ci_lower),
           y = c(0, 0, y_max, y_max)
         )
         
         p <- p + geom_polygon(data = conf_data, 
-                              aes(x = x, y = y),
+                              aes(x = x, y = y),  # 直接使用列名，不用继承
                               fill = "#E31A1C", 
                               alpha = 0.15,
-                              inherit.aes = FALSE)  # Explicitly do not inherit aesthetics
+                              inherit.aes = FALSE)  # 明确不继承美学映射
       }
     }
     
-    # --- Re-integrated manual label positioning logic ---
+    # --- [!] RE-INTEGRATED MANUAL LABEL POSITIONING LOGIC ---
     label_positions <- list()
     
     # For NDVI_1
@@ -914,7 +915,7 @@ create_figure_1_plots <- function(analysis_results, processed_data) {
         label_positions[[2]] <- list(x_offset = 0.01 * x_span, y_position = 0.5 * y_max, hjust = 0)
       }
     }
-    # Fallback (though unlikely to be used with these specific indices)
+    # Fallback (though unlikely to be used with your specific indices)
     else {
       for(i in 1:length(breakpoints)) {
         label_positions[[i]] <- list(x_offset = ifelse(i == 1, -0.05, 0.05) * x_span, y_position = (0.9 - (i-1)*0.2) * y_max, hjust = ifelse(i == 1, 1, 0))
@@ -932,13 +933,13 @@ create_figure_1_plots <- function(analysis_results, processed_data) {
                           label.size = 0.2, label.padding = unit(0.15, "lines"))
       }
     }
-    # --- End of re-integrated logic ---
+    # --- END OF RE-INTEGRATED LOGIC ---
     
     p <- p +
       nature_theme_professional +
-      # Keep clip = "on" but add boundary space
+      # 保持 clip = "on" 但增加边界空间
       coord_cartesian(xlim = plot_xlim,
-                      ylim = c(-0.02 * y_max, y_max * 1.1), # Add space at top and bottom
+                      ylim = c(-0.02 * y_max, y_max * 1.1), # 下方和上方都增加空间
                       expand = FALSE, clip = "on") +
       labs(x = paste(gsub("_1", "", idx), "Value"), y = "Landslide Frequency (Smoothed)")
     
@@ -995,10 +996,12 @@ create_figure_1_plots <- function(analysis_results, processed_data) {
 # =========================================================================
 
 # Assuming 'landslide_data_processed' from the global environment is the starting point
-# 1. Run the analysis. The function returns a list with results and the modified data.
+# 1. Run the analysis. The function returns a list with results and the MODIFIED data.
 analysis_output <- analyze_vegetation_thresholds(landslide_data)
 
-# 2. Pass the processed data from the analysis output to the plotting function.
+
+
+# 2. [!] CRITICAL FIX: Pass the MODIFIED data from the analysis output to the plotting function.
 # Use analysis_output$results for the analysis results.
 # Use analysis_output$data for the data, which now includes the 'NDVI_Biophysical_Zone' column.
 figure_1 <- create_figure_1_plots(analysis_output$results, analysis_output$data)
@@ -1006,10 +1009,13 @@ figure_1 <- create_figure_1_plots(analysis_output$results, analysis_output$data)
 # To update the global 'landslide_data_processed' object for subsequent script sections (e.g., Figure 2, 3), do this:
 landslide_data_processed <- analysis_output$data
 
+
+
+
 # ===========================================================================
 
 # -------------------------------------------------------------------------
-# MAIN FIGURE 2: Data Analysis - Multi-Source Vegetation Data Validation and Cross-Platform Consistency
+# MAIN FIGURE 2: 数据分析部分 - 多源植被数据验证与跨平台一致性
 # -------------------------------------------------------------------------
 
 # =============================================================================
@@ -1017,10 +1023,10 @@ landslide_data_processed <- analysis_output$data
 analyze_vegetation_validation_data <- function() {
   cat("\n=== Analyzing Vegetation Data Validation and Cross-Platform Consistency ===\n")
   
-  data <- landslide_data_processed # Use the data processed earlier
+  data <- landslide_data_processed # 使用前面处理过的数据
   analysis_results <- list()
   
-  # --- 2A: Global vegetation type distribution analysis ---
+  # --- 2A: 全球植被类型分布分析 ---
   if("MODIS_IGBP_Class_Clean" %in% colnames(data)) {
     modis_dist <- data %>%
       filter(!is.na(MODIS_IGBP_Class_Clean), MODIS_IGBP_Class_Clean != "Unknown") %>%
@@ -1038,7 +1044,7 @@ analyze_vegetation_validation_data <- function() {
     cat("Warning: MODIS_IGBP_Class_Clean not available for vegetation type analysis\n")
   }
   
-  # --- 2B: Multi-source consistency level analysis ---
+  # --- 2B: 多源一致性水平分析 ---
   if("Multi_Source_Consistency_Label" %in% colnames(data)) {
     consistency_summary <- data %>%
       filter(!is.na(Multi_Source_Consistency_Label)) %>%
@@ -1055,6 +1061,7 @@ analyze_vegetation_validation_data <- function() {
     cat("Warning: Multi_Source_Consistency_Label not available for consistency analysis\n")
   }
   
+
   # <<< NEW SECTION START >>>
   # STATISTICAL TEST 1: Fleiss' Kappa for Multi-Source Consistency
   # PURPOSE: To provide a single, robust statistic quantifying the agreement
@@ -1086,8 +1093,9 @@ analyze_vegetation_validation_data <- function() {
       Raters = fleiss_result$raters
     )
     
-    # The `irr` package doesn't directly provide CI for Fleiss' Kappa.
-    # We will add the manually provided CI for reference.
+    # Storing CI requires a different approach as irr package doesn't directly provide it.
+    # We will report the main value and can add CI later if needed with a bootstrapper.
+    # For now, we will add the CI from your text as a reference.
     fleiss_summary$CI_95_Lower_Manual = 0.67
     fleiss_summary$CI_95_Upper_Manual = 0.71
     
@@ -1098,6 +1106,7 @@ analyze_vegetation_validation_data <- function() {
     cat("Warning: Not enough complete data across all three platforms to calculate Fleiss' Kappa.\n")
   }
   # <<< NEW SECTION END >>>
+  
   
   # <<< NEW SECTION START >>>
   # HIERARCHICAL CONSISTENCY ASSESSMENT
@@ -1132,7 +1141,16 @@ analyze_vegetation_validation_data <- function() {
   
   cat("\nCohen's Kappa (MODIS vs. Copernicus):\n")
   print(cohen_kappa_result)
-  # saveTable(cohen_kappa_result, "Supplementary_Table_2b_kappa_MODIS_VS_Copernicus")
+  # 手动从cohen_kappa_result中提取需要的值并创建一个新的数据框
+  kappa_df <- data.frame(
+    Statistic = "Cohen's Kappa",
+    Value = cohen_kappa_result$value,
+    Z_statistic = cohen_kappa_result$statistic,
+    P_value = cohen_kappa_result$p.value,
+    Subjects = cohen_kappa_result$subjects,
+    Raters = cohen_kappa_result$raters
+  )
+  saveTable(kappa_df, "Supplementary_Table_2b_kappa_MODIS_VS_Copernicus")
   # --- Performing Stage 2: Validation using Structural Data (Hansen) ---
   cat("\n--- Performing Stage 2: Validating MODIS classes with Hansen Tree Cover % ---\n")
   
@@ -1156,6 +1174,7 @@ analyze_vegetation_validation_data <- function() {
   
   # <<< NEW SECTION END >>>
   
+  
   # <<< NEW SECTION START >>>
   # STATISTICAL TEST 2: Kruskal-Wallis test for Biophysical Zone Distribution
   # PURPOSE: To statistically test if the distribution of biophysical zones is
@@ -1170,7 +1189,7 @@ analyze_vegetation_validation_data <- function() {
     ) %>%
     mutate(
       Biophysical_Zone_Rank = as.numeric(factor(NDVI_Biophysical_Zone,
-                                                levels = c("IDZ", "CTZ", "SDZ")))
+                                         levels = c("IDZ", "CTZ", "SDZ")))
     )
   
   if(nrow(kruskal_data) > 10) {
@@ -1186,21 +1205,22 @@ analyze_vegetation_validation_data <- function() {
   } else {
     cat("Warning: Not enough data for Kruskal-Wallis test.\n")
   }
-  
+
   # <<< NEW SECTION END >>>
   
-  # Helper function to analyze zone distribution for panels 2C, 2D, and 2E
+  # 用于分析2C, 2D, 2E的助手函数
+  # [!] 这是需要修正的部分
   analyze_zone_distribution <- function(data_subset, x_var_str, output_filename) {
     summary_df <- data_subset %>%
       filter(!is.na(.data[[x_var_str]]), !is.na(NDVI_Biophysical_Zone),
              .data[[x_var_str]] != "Unknown", .data[[x_var_str]] != "Other", 
              NDVI_Biophysical_Zone != "Unknown") %>%
-      # First grouping: group by x-axis category and risk zone to count each combination
+      # 第一次分组：按x轴分类和风险区共同分组，计算每个组合的数量
       group_by(across(all_of(x_var_str)), NDVI_Biophysical_Zone) %>%
       plyr::summarise(Count = n(), .groups = "drop") %>%
-      # Second grouping (key step): group only by the x-axis category
+      # 第二次分组 (关键步骤)：仅按x轴分类进行分组
       group_by(across(all_of(x_var_str))) %>%
-      # Calculate percentage, where sum(Count) is the total within each x-axis category
+      # 计算百分比，此时 sum(Count) 是每个x轴分类内部的总数
       mutate(Percentage = Count / sum(Count) * 100)
     
     if(nrow(summary_df) > 0) {
@@ -1208,7 +1228,7 @@ analyze_vegetation_validation_data <- function() {
     }
     return(summary_df)
   }
-  # --- 2C: Risk zone analysis in major land cover types ---
+  # --- 2C: 主要土地覆盖类型中的风险区分析 ---
   landcover_zone_summary <- analyze_zone_distribution(
     data_subset = data %>% filter(MODIS_IGBP_Simplified %in% c("Forest", "Woody Vegetation", "Grassland", "Cropland/Vegetation")),
     x_var_str = "MODIS_IGBP_Simplified",
@@ -1217,7 +1237,7 @@ analyze_vegetation_validation_data <- function() {
   analysis_results[["landcover_zone_summary"]] <- landcover_zone_summary
   
   
-  # --- 2D: Forest cover density and risk zone analysis ---
+  # --- 2D: 森林覆盖密度与风险区分析 ---
   forest_density_zone_summary <- analyze_zone_distribution(
     data_subset = data,
     x_var_str = "Forest_Cover_Category",
@@ -1225,7 +1245,7 @@ analyze_vegetation_validation_data <- function() {
   )
   analysis_results[["forest_density_zone_summary"]] <- forest_density_zone_summary
   
-  # --- 2E: Climate zone risk distribution analysis ---
+  # --- 2E: 气候区风险分布分析 ---
   climate_zone_summary <- analyze_zone_distribution(
     data_subset = data,
     x_var_str = "Climate_Zone",
@@ -1240,24 +1260,24 @@ analyze_vegetation_validation_data <- function() {
 analyze_vegetation_validation_data <- function() {
   cat("\n=== Analyzing Vegetation Data Validation and Cross-Platform Consistency ===\n")
   
-  # Use the globally defined `landslide_data_processed` variable
+  # 使用在预处理步骤中生成的全局变量
   data <- landslide_data_processed 
   analysis_results <- list()
   
-  # --- 2A: Global vegetation type distribution analysis ---
+  # --- 2A: 全球植被类型分布分析 ---
   if("MODIS_IGBP_Class_Clean" %in% colnames(data)) {
     modis_dist <- data %>%
-      # Explicitly use dplyr::filter
+      # 明确使用 dplyr::filter
       dplyr::filter(!is.na(MODIS_IGBP_Class_Clean), MODIS_IGBP_Class_Clean != "Unknown") %>%
       dplyr::group_by(MODIS_IGBP_Class_Clean) %>%
-      # Explicitly use dplyr::summarise and dplyr::n()
+      # 明确使用 dplyr::summarise 和 dplyr::n()
       dplyr::summarise(Count = n(), .groups = "drop") %>%
       dplyr::filter(Count > 0) %>%
-      # Explicitly use dplyr::arrange
+      # 明确使用 dplyr::arrange
       dplyr::arrange(desc(Count)) %>%
-      # Explicitly use dplyr::slice_head
+      # 明确使用 dplyr::slice_head
       dplyr::slice_head(n = 10) %>% # Top 10 for clarity
-      # Explicitly use dplyr::mutate
+      # 明确使用 dplyr::mutate
       dplyr::mutate(Percentage = Count / sum(Count) * 100,
                     Display_Name_Short = sapply(strsplit(MODIS_IGBP_Class_Clean, " "), function(x) paste(x[1:min(length(x),2)], collapse=" "))) # First 1 or 2 words
     
@@ -1267,7 +1287,7 @@ analyze_vegetation_validation_data <- function() {
     cat("Warning: MODIS_IGBP_Class_Clean not available for vegetation type analysis\n")
   }
   
-  # --- 2B: Multi-source consistency level analysis ---
+  # --- 2B: 多源一致性水平分析 ---
   if("Multi_Source_Consistency_Label" %in% colnames(data)) {
     consistency_summary <- data %>%
       dplyr::filter(!is.na(Multi_Source_Consistency_Label)) %>%
@@ -1286,21 +1306,21 @@ analyze_vegetation_validation_data <- function() {
   
   
   
-  # --- Helper function to analyze zone distribution for panels 2C, 2D, and 2E ---
+  # --- 用于分析2C, 2D, 2E的助手函数 (这是关键的修正部分) ---
   analyze_zone_distribution <- function(data_subset, x_var_str, output_filename) {
     summary_df <- data_subset %>%
       dplyr::filter(!is.na(.data[[x_var_str]]), !is.na(NDVI_Biophysical_Zone),
                     .data[[x_var_str]] != "Unknown", .data[[x_var_str]] != "Other", 
                     NDVI_Biophysical_Zone != "Unknown") %>%
-      # First grouping: group by x-axis category and risk zone
+      # 第一次分组：按x轴分类和风险区共同分组
       dplyr::group_by(across(all_of(x_var_str)), NDVI_Biophysical_Zone) %>%
-      # Count each combination
+      # 计算每个组合的数量
       dplyr::summarise(Count = n(), .groups = "drop") %>%
-      # Second grouping (key step): group only by the x-axis category
+      # 第二次分组 (关键步骤)：仅按x轴分类进行分组
       dplyr::group_by(across(all_of(x_var_str))) %>%
-      # Calculate percentage, where sum(Count) is the total within each x-axis category
+      # 计算百分比，此时 sum(Count) 是每个x轴分类内部的总数
       dplyr::mutate(Percentage = Count / sum(Count) * 100) %>%
-      # Ungrouping is good practice after calculations
+      # 完成计算后取消分组，这是个好习惯
       dplyr::ungroup()
     
     if(nrow(summary_df) > 0) {
@@ -1309,7 +1329,7 @@ analyze_vegetation_validation_data <- function() {
     return(summary_df)
   }
   
-  # --- 2C: Risk zone analysis in major land cover types ---
+  # --- 2C: 主要土地覆盖类型中的风险区分析 ---
   landcover_zone_summary <- analyze_zone_distribution(
     data_subset = data %>% dplyr::filter(MODIS_IGBP_Simplified %in% c("Forest", "Woody Vegetation", "Grassland", "Cropland/Vegetation")),
     x_var_str = "MODIS_IGBP_Simplified",
@@ -1317,7 +1337,7 @@ analyze_vegetation_validation_data <- function() {
   )
   analysis_results[["landcover_zone_summary"]] <- landcover_zone_summary
   
-  # --- 2D: Forest cover density and risk zone analysis ---
+  # --- 2D: 森林覆盖密度与风险区分析 ---
   forest_density_zone_summary <- analyze_zone_distribution(
     data_subset = data,
     x_var_str = "Forest_Cover_Category",
@@ -1325,7 +1345,7 @@ analyze_vegetation_validation_data <- function() {
   )
   analysis_results[["forest_density_zone_summary"]] <- forest_density_zone_summary
   
-  # --- 2E: Climate zone risk distribution analysis ---
+  # --- 2E: 气候区风险分布分析 ---
   climate_zone_summary <- analyze_zone_distribution(
     data_subset = data,
     x_var_str = "Climate_Zone",
@@ -1365,8 +1385,9 @@ analyze_vegetation_validation_data <- function() {
       Raters = fleiss_result$raters
     )
     
-    # The `irr` package doesn't directly provide CI for Fleiss' Kappa.
-    # We will add the manually provided CI for reference.
+    # Storing CI requires a different approach as irr package doesn't directly provide it.
+    # We will report the main value and can add CI later if needed with a bootstrapper.
+    # For now, we will add the CI from your text as a reference.
     fleiss_summary$CI_95_Lower_Manual = 0.67
     fleiss_summary$CI_95_Upper_Manual = 0.71
     
@@ -1412,7 +1433,16 @@ analyze_vegetation_validation_data <- function() {
   
   cat("\nCohen's Kappa (MODIS vs. Copernicus):\n")
   print(cohen_kappa_result)
-  saveTable(as.data.frame(cohen_kappa_result)[c(1:5)], "Supplementary_Table_2b_kappa_MODIS_VS_Copernicus")
+  # 手动从cohen_kappa_result中提取需要的值并创建一个新的数据框
+  kappa_df <- data.frame(
+    Statistic = "Cohen's Kappa",
+    Value = cohen_kappa_result$value,
+    Z_statistic = cohen_kappa_result$statistic,
+    P_value = cohen_kappa_result$p.value,
+    Subjects = cohen_kappa_result$subjects,
+    Raters = cohen_kappa_result$raters
+  )
+  saveTable(kappa_df, "Supplementary_Table_2b_kappa_MODIS_VS_Copernicus")
   # --- Performing Stage 2: Validation using Structural Data (Hansen) ---
   cat("\n--- Performing Stage 2: Validating MODIS classes with Hansen Tree Cover % ---\n")
   
@@ -1451,7 +1481,7 @@ analyze_vegetation_validation_data <- function() {
     ) %>%
     mutate(
       Biophysical_Zone_Rank = as.numeric(factor(NDVI_Biophysical_Zone,
-                                                levels = c("IDZ", "CTZ", "SDZ")))
+                                         levels = c("IDZ", "CTZ", "SDZ")))
     )
   
   if(nrow(kruskal_data) > 10) {
@@ -1470,26 +1500,26 @@ analyze_vegetation_validation_data <- function() {
   
   # <<< NEW SECTION END >>>
   
-  # Assign the analysis results to a global variable for use in plotting functions
+  # 将分析结果赋值给全局变量，供后续可视化函数使用
   assign("vegetation_validation_results", analysis_results, envir = .GlobalEnv)
   
   cat("✓ Vegetation validation analysis completed successfully\n")
   return(analysis_results)
 }
 
-# Run the analysis
+# 执行分析
 vegetation_validation_results <- analyze_vegetation_validation_data()
 
 
 # -------------------------------------------------------------------------
-# MAIN FIGURE 2: Visualization - Multi-Source Vegetation Data Validation and Cross-Platform Consistency
+# MAIN FIGURE 2: 可视化部分 - 多源植被数据验证与跨平台一致性（改进x轴标签显示）
 # -------------------------------------------------------------------------
 create_vegetation_validation_plots <- function(analysis_results, data) {
   cat("\n=== Creating Figure 2 Visualizations with Improved Labels ===\n")
   
   plot_list <- list()
   
-  # --- 2A: Global Vegetation Type Distribution (Treemap) ---
+  # --- 2A: 全球植被类型分布(Treemap) --- [无变化]
   create_vegetation_treemap <- function() {
     if(!"vegetation_type_distribution" %in% names(analysis_results) || 
        nrow(analysis_results[["vegetation_type_distribution"]]) == 0) {
@@ -1515,7 +1545,7 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
     return(p_treemap)
   }
   
-  # --- 2B: Multi-Source Consistency Levels (Pie Chart) ---
+  # --- 2B: 多源一致性水平(饼图) --- [无变化]
   create_multisource_consistency_piechart <- function() {
     if(!"multisource_consistency" %in% names(analysis_results) || 
        nrow(analysis_results[["multisource_consistency"]]) == 0) {
@@ -1569,20 +1599,20 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
     return(p_piechart)
   }
   
-  # --- Shared function: Create risk distribution plot (for 2C, 2D, 2E) ---
-  # Main change: Adds logic to wrap long labels onto two lines.
+  # --- 修改的共用函数: 创建风险分布图(用于2C, 2D, 2E) ---
+  # 主要变化：添加了标签处理逻辑，将长标签分成两行显示
   create_zone_distribution_plot <- function(summary_df, x_var_str, x_lab, is_first_plot = FALSE, is_last_plot = FALSE) {
     if(is.null(summary_df) || nrow(summary_df) == 0) {
       return(ggplot() + geom_text(aes(0, 0, label = paste("No data available for", x_var_str))) + 
                nature_theme_professional)
     }
     
-    # Create a new modified data frame to handle label display
+    # 创建新的修改版数据框，处理标签分行显示
     modified_df <- summary_df
     
-    # Special handling for forest cover labels - more concise format
+    # 特殊处理森林覆盖度标签 - 更简洁的格式
     if(x_var_str == "Forest_Cover_Category") {
-      # Use more concise labels, retaining only essential info
+      # 使用更简洁的标签，只保留必要信息
       label_mapping <- c(
         "No Forest (0%)" = "No Forest\n(0%)",
         "Sparse (1-25%)" = "Sparse\n(1-25%)",
@@ -1591,17 +1621,17 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
         "Very Dense (>75%)" = "Very Dense\n(>75%)"
       )
       
-      # Ensure original order is maintained
+      # 确保保持原始顺序
       if("order" %in% colnames(modified_df)) {
         original_order <- modified_df$order
       } else {
-        # If no order column, create one based on standard sorting
-        standard_order <- c("No Forest (0%)", "Sparse (1-25%)", "Moderate (26-50%)", 
-                            "Dense (51-75%)", "Very Dense (>75%)")
+        # 如果没有order列，尝试创建一个基于标准排序的列
+        standard_order <- c("No Forest (0%)", "Very Low (1-20%)", "Low (21-40%)", 
+                            "Medium (41-60%)", "High (61-80%)", "Very High (81-100%)")
         original_order <- match(modified_df[[x_var_str]], standard_order)
       }
       
-      # Create new label column and maintain sorting
+      # 创建新的标签列并保持排序
       modified_df$Display_Label <- sapply(modified_df[[x_var_str]], function(x) {
         if(x %in% names(label_mapping)) {
           return(label_mapping[x])
@@ -1610,13 +1640,13 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
         }
       })
       
-      # Ensure correct factor ordering
+      # 确保排序正确
       modified_df$Display_Label <- factor(modified_df$Display_Label, 
                                           levels = unique(modified_df$Display_Label[order(original_order)]))
     }
-    # Handle other label types
+    # 处理其他类型的标签 [与之前相同]
     else if(x_var_str == "MODIS_IGBP_Simplified") {
-      # Land cover type label handling
+      # 土地覆盖类型标签处理 [代码保持不变]
       label_mapping <- c(
         "Cropland/Vegetation" = "Croplands/\nVegetation",
         "Evergreen Needleleaf" = "Evergreen\nNeedleleaf",
@@ -1648,7 +1678,7 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
         }
       })
     } else if(x_var_str == "Climate_Zone") {
-      # Climate zone label handling
+      # 气候区标签处理 [代码保持不变]
       label_mapping <- c(
         "Temperate" = "Temperate",
         "Mediterranean/Subtropical" = "Mediterranean/\nSubtropical",
@@ -1667,17 +1697,17 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
         }
       })
     } else {
-      # Default case, use original labels
+      # 默认情况，使用原始标签
       modified_df$Display_Label <- modified_df[[x_var_str]]
     }
     
-    # Use more compact width settings for the forest cover plot
-    bar_width <- 0.8  # Default width
+    # 为森林覆盖度图表使用更紧凑的宽度设置
+    bar_width <- 0.8  # 默认宽度
     if(x_var_str == "Forest_Cover_Category") {
-      bar_width <- 0.7  # Use narrower bars for forest cover
+      bar_width <- 0.7  # 森林覆盖度使用更窄的条形
     }
     
-    # Create plot with modified labels
+    # 使用修改后的标签创建图表
     p <- ggplot(modified_df, aes(x = Display_Label, y = Percentage, fill = NDVI_Biophysical_Zone)) +
       geom_col(position = "stack", alpha = 0.9, width = bar_width) +
       geom_text(aes(label = ifelse(Percentage > 7, sprintf("%.0f%%", Percentage), "")),
@@ -1688,17 +1718,17 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
                          limits = c(0, 100), breaks = seq(0,100,25)) +
       nature_theme_professional
     
-    # Use special label settings for the forest cover plot
+    # 为森林覆盖度图表使用特殊的标签设置
     if(x_var_str == "Forest_Cover_Category") {
       p <- p + theme(
-        axis.text.x = element_text(angle = 0, hjust = 0.5, size=7), # Slightly smaller font
+        axis.text.x = element_text(angle = 0, hjust = 0.5, size=7), # 稍微小一点的字体
         axis.text.y = element_text(size=6),
         axis.title = element_text(size=7),
-        plot.margin = ggplot2::margin(2, 0, 2, 0),  # Reduce left/right margins
-        panel.spacing = unit(0, "pt")  # Reduce panel spacing
+        plot.margin = ggplot2::margin(2, 0, 2, 0),  # 减少左右边距
+        panel.spacing = unit(0, "pt")  # 减少面板间距
       )
     } else {
-      # Use standard settings for other plots
+      # 其他图表使用标准设置
       p <- p + theme(
         axis.text.x = element_text(angle = 0, hjust = 0.5, size=8),
         axis.text.y = element_text(size=6),
@@ -1707,10 +1737,10 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
       )
     }
     
-    # Add x-axis label
+    # 添加x轴标签
     p <- p + labs(x = x_lab)
     
-    # Only add Y-axis label to the first plot
+    # 只在第一个图添加Y轴标签
     if (is_first_plot) {
       p <- p + labs(y = "Percentage of Landslides (%)")
     } else {
@@ -1719,7 +1749,7 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
                      axis.ticks.y = element_blank())
     }
     
-    # Only show the legend on the last plot
+    # 只在最后一个图显示图例
     if (!is_last_plot) {
       p <- p + theme(legend.position = "none")
     } else {
@@ -1735,7 +1765,7 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
     return(p)
   }
   
-  # --- 2C: Risk zones in major land cover types ---
+  # --- 2C: 主要土地覆盖类型中的风险区 ---
   p2c <- create_zone_distribution_plot(
     summary_df = analysis_results[["landcover_zone_summary"]],
     x_var_str = "MODIS_IGBP_Simplified",
@@ -1744,7 +1774,7 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
     is_last_plot = FALSE
   )
   
-  # --- 2D: Forest cover density and risk zones ---
+  # --- 2D: 森林覆盖密度与风险区 ---
   p2d <- create_zone_distribution_plot(
     summary_df = analysis_results[["forest_density_zone_summary"]],
     x_var_str = "Forest_Cover_Category",
@@ -1753,16 +1783,16 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
     is_last_plot = FALSE
   )
   
-  # --- 2E: Climate zone risk distribution ---
+  # --- 2E: 气候区风险分布 ---
   p2e <- create_zone_distribution_plot(
     summary_df = analysis_results[["climate_zone_summary"]],
     x_var_str = "Climate_Zone",
     x_lab = "Climate Zone",
     is_first_plot = FALSE,
-    is_last_plot = FALSE  # This is the last plot, show the legend
+    is_last_plot = FALSE  # 这是最后一个图，显示图例
   )
   
-  # Create all components of Figure 2
+  # 创建图2的所有组件
   p2a <- create_vegetation_treemap()
   p2b <- create_multisource_consistency_piechart()
   
@@ -1774,18 +1804,18 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
     climate_zone = p2e
   )
   
-  # Combine Figure 2 - use similar dimension ratios as Figure 1
+  # 组合图2 - 使用与图1相似的尺寸比例
   top_row <- p2a + p2b + plot_layout(widths = c(1.2, 0.8))
   
-  # Combine bottom row and ensure only one legend
+  # 组合底部行并确保只有一个图例
   bottom_row <- p2c + p2d + p2e + 
     plot_layout(
       widths = c(1, 1.2, 1),
-      guides = "collect"  # Collect all legends
+      guides = "collect"  # 收集所有图例
     ) & 
-    theme(legend.position = "bottom")  # Ensure legend is at the bottom
+    theme(legend.position = "bottom")  # 确保图例在底部
   
-  # Combine top and bottom rows
+  # 组合上下两行
   main_fig2 <- (top_row / bottom_row) + 
     plot_layout(heights = c(1, 1)) + 
     plot_annotation(tag_levels = list(paste0("(", letters, ")"))) &
@@ -1795,24 +1825,24 @@ create_vegetation_validation_plots <- function(analysis_results, data) {
       plot.margin = ggplot2::margin(5, 5, 5, 5)
     )
   
-  # Save the combined figure - use the same size as Figure 1
-  saveFigure(main_fig2, "Main_Figure_2_A4", width = 8.3, height = 6.8)
+  # 保存组合图 - 使用与图1相同的尺寸
+  saveFigure(main_fig2, "Main_Figure_2_A4", width = 8.3, height = 6.8)  # 与图1相同的尺寸
   
   cat("✓ Figure 2 visualizations with improved labels completed successfully\n")
   return(list(plots = plot_list, combined = main_fig2))
 }
 
-# Generate the plots
+# 执行出图
 figure2_plots <- create_vegetation_validation_plots(vegetation_validation_results, landslide_data_processed)
 
 # ------------------------------------------------------------------------------
-# Figure 2 Supplementary: Sankey Diagram
+# Figure 2 桑基图
 # ------------------------------------------------------------------------------
 # ==============================================================================
-# Step 1: Data Preparation
+# 步骤 1: 数据准备 (与您原代码相同)
 # ==============================================================================
 
-# 1.1 Create a unified, simplified final classification (as the rightmost endpoint of the Sankey diagram)
+# 1.1 创建一个统一的、简化的最终分类 (作为桑基图的右侧终点)
 unified_classification <- function(modis, copernicus, hansen) {
   dplyr::case_when(
     grepl("Forest", modis) | grepl("Forest", copernicus) | grepl("Forest", hansen) ~ "Forest",
@@ -1827,24 +1857,24 @@ unified_classification <- function(modis, copernicus, hansen) {
   )
 }
 
-# 1. Filter data
+# 1. 筛选数据
 complete_data <- landslide_data_processed %>%
   dplyr::filter(!is.na(MODIS_IGBP_Simplified) & !is.na(Copernicus_LC_Simplified) & !is.na(Hansen_Simplified)) %>%
   dplyr::filter(MODIS_IGBP_Simplified != "Unknown" & Copernicus_LC_Simplified != "Unknown")
 
 total_samples <- nrow(complete_data)
 
-# 2. Calculate frequencies
+# 2. 计算频率
 combo_counts <- complete_data %>%
   dplyr::group_by(MODIS_IGBP_Simplified, Copernicus_LC_Simplified, Hansen_Simplified) %>%
   dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
   dplyr::mutate(percent = n / total_samples * 100)
 
-# 3. Assign alluvium IDs
+# 3. 分配 alluvium ID
 combo_counts <- combo_counts %>%
   dplyr::mutate(alluvium = dplyr::row_number())
 
-# 4. Convert to long format
+# 4. 转换为长格式
 sankey_data_long <- combo_counts %>%
   tidyr::pivot_longer(
     cols = c(MODIS_IGBP_Simplified, Copernicus_LC_Simplified, Hansen_Simplified),
@@ -1852,7 +1882,7 @@ sankey_data_long <- combo_counts %>%
     values_to = "stratum"
   )
 
-# 5. Add unified classification
+# 5. 添加统一分类
 classification_lookup <- combo_counts %>%
   dplyr::mutate(
     Unified_Class = unified_classification(
@@ -1867,7 +1897,7 @@ sankey_data_with_unified <- sankey_data_long %>%
   dplyr::left_join(classification_lookup, by = "alluvium")
 
 # ==============================================================================
-# Step 2: Define Colors and Labels
+# 步骤 2: 定义颜色和标签 (与您原代码相同)
 # ==============================================================================
 
 color_palette <- c(
@@ -1894,7 +1924,7 @@ sankey_data_final <- sankey_data_with_unified %>%
   )
 
 # ==============================================================================
-# Step 3: Prepare Final Plotting Data
+# 步骤 3: 准备最终绘图数据 (与您原代码相同)
 # ==============================================================================
 
 unified_axis_data <- sankey_data_final %>%
@@ -1914,41 +1944,41 @@ plot_data <- dplyr::bind_rows(
   sankey_data_final %>% dplyr::select(alluvium, n, percent, Source, stratum, stratum_ordered),
   unified_axis_data
 ) %>%
-  # Ensure Source is an ordered factor for plotting
+  # 确保Source也是一个有序因子，以便绘图
   dplyr::mutate(
     Source = factor(Source, levels = c("MODIS_IGBP", "Copernicus_LC", "Hansen", "Unified"))
   )
 
 
 # ==============================================================================
-# Step 4: Add Percentage Labels with Optimized Positioning
+# 步骤 4: 添加百分比标签 - 优化标签位置 (最终修正版，带显式包名)
 # ==============================================================================
 
-# First, calculate the total size of each stratum (classification block)
+# 首先，我们需要从原始绘图数据中计算出每个分类块（stratum）的总大小
 stratum_summary <- plot_data %>%
   dplyr::filter(!is.na(stratum_ordered)) %>%
   dplyr::group_by(Source, stratum_ordered) %>%
   dplyr::summarise(stratum_total_n = sum(n), .groups = "drop")
 
-# Next, calculate the Y-axis position and percentage for each block
+# 其次，基于每个块的总大小，我们计算其在Y轴上的位置和百分比
 label_data <- stratum_summary %>%
-  # Use desc() to reverse the order to match ggalluvial's stacking (top-level factor at the top)
+  # 使用 desc() 反转排列顺序，以匹配 ggalluvial 的堆叠顺序 (将因子第一级放在顶部)
   dplyr::arrange(Source, dplyr::desc(stratum_ordered)) %>%
-  # Group by the x-axis variable (Source)
+  # 按x轴变量（Source）分组
   dplyr::group_by(Source) %>%
-  # Calculate the top, bottom, and center position for each color block
+  # 计算每个色块的顶部、底部和中心位置
   dplyr::mutate(
     y_top = cumsum(stratum_total_n),
     y_bottom = dplyr::lag(y_top, default = 0),
     y_center = (y_top + y_bottom) / 2,
-    # Calculate the correct percentage based on the block's total size
+    # 基于块的总大小计算正确的百分比
     total_n_in_source = sum(stratum_total_n),
     percent = stratum_total_n / total_n_in_source * 100,
     label = ifelse(percent >= 2, sprintf("%.0f%%", percent), "")
   ) %>%
-  dplyr::ungroup() # Ungroup after calculations
+  dplyr::ungroup() # 完成计算后取消分组
 
-# Finally, add styling (size and color) to the labels
+# 最后，为标签添加样式（大小和颜色）
 label_data <- label_data %>%
   dplyr::mutate(
     label_size = dplyr::case_when(
@@ -1966,47 +1996,49 @@ label_data <- label_data %>%
   )
 
 # ==============================================================================
-# Step 5: Plot the Sankey Diagram (using the new label_data)
+# 步骤 5: 绘制桑基图 (使用新的 label_data)
 # ==============================================================================
 
 sankey_plot <- ggplot2::ggplot(data = plot_data,
                                ggplot2::aes(x = Source, stratum = stratum_ordered, alluvium = alluvium,
                                             y = n, fill = stratum_ordered)) +
-  # Use ggalluvial's core geometric objects
+  # 使用ggalluvial的核心几何对象
   ggalluvial::geom_flow(stat = "alluvium", lode.guidance = "forward", color = "darkgray", alpha = 0.6, width = 0.4) +
   ggalluvial::geom_stratum(alpha = 1, width = 0.4, linewidth = 0.2) +
   
-  # Add percentage labels inside the strata using the corrected label_data
+  # 添加分类块内的百分比标签 - 使用修正后的 label_data
   ggplot2::geom_text(
-    data = label_data %>% dplyr::filter(label != ""), # Only plot non-empty labels
+    data = label_data %>% dplyr::filter(label != ""), # 只标注非空标签
     mapping = ggplot2::aes(x = Source, y = y_center, label = label, size = label_size, color = label_color),
     inherit.aes = FALSE,
     fontface = "bold"
   ) +
   
-  # Set label size and color
+  # 设置标签大小和颜色
   ggplot2::scale_size_identity() +
   ggplot2::scale_color_identity() +
   
-  # Use our defined color palette
+  # 使用我们定义的颜色
   ggplot2::scale_fill_manual(
     values = color_palette,
     name = "Land Cover Classification",
     breaks = class_order,
-    na.value = "grey80" # Specify color for any potential NA values
+    na.value = "grey80" # 为可能出现的NA值指定颜色
   ) +
   
-  # Adjust X-axis labels
+  # 调整X轴标签
   ggplot2::scale_x_discrete(
     limits = c("MODIS_IGBP", "Copernicus_LC", "Hansen", "Unified"),
     labels = c("MODIS", "Copernicus", "Hansen", "Unified"),
-    expand = ggplot2::expansion(mult = c(0.05, 0.05)) # Adjust space on both sides of x-axis
+    expand = ggplot2::expansion(mult = c(0.05, 0.05)) # 调整x轴两侧空白
   ) +
   
-  # No extra space needed for Y-axis
+  # Y轴不需要额外空间
   ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.01, 0.01))) +
   
-  # Theme and titles
+  # 主题和标题
+  # 注意：如果您想要黑色背景，请在这里应用 theme_dark() 或者手动设置
+  # 例如：theme_dark() + theme(...)
   nature_theme_professional +
   ggplot2::theme_minimal(base_family = "sans") +
   ggplot2::theme(
@@ -2014,10 +2046,10 @@ sankey_plot <- ggplot2::ggplot(data = plot_data,
     legend.box = "horizontal",
     legend.title = ggplot2::element_text(size = 9, face = "bold"),
     legend.text = ggplot2::element_text(size = 8),
-    legend.margin = ggplot2::margin(b = 0, t = 0), # Reduce distance between legend and plot
-    legend.spacing.x = ggplot2::unit(0.2, "cm"), # Reduce spacing within legend
-    legend.key.size = ggplot2::unit(0.5, "cm"), # Reduce size of legend keys
-    
+    legend.margin = ggplot2::margin(b = 0, t = 0), # 减小图例与图的距离
+    legend.spacing.x = ggplot2::unit(0.2, "cm"), # 减小图例内部间距
+    legend.key.size = ggplot2::unit(0.5, "cm"), # 减小图例符号大小
+
     panel.grid = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.title.y = ggplot2::element_blank(),
@@ -2033,34 +2065,38 @@ sankey_plot <- ggplot2::ggplot(data = plot_data,
   ggplot2::labs(
     title = "Cross-Platform Land Cover Classification Consistency",
     subtitle = "Flow of landslide event locations between MODIS, Copernicus, and Hansen classifications",
-    x = "Data Source / Classification", # Add X-axis title
+    x = "Data Source / Classification", # 添加X轴标题
     y = "Number of Landslides",
-    fill = "" # Hide the legend title
+    fill = "" # 隐藏图例标题
   )
 
-# Print the plot
+# 打印图形
 print(sankey_plot)
 
-# Save the plot
-saveFigure(sankey_plot, "Supplementary_Fig_2b_sankey_plot", width = 8.3, height = 6.8)
+
+# 执行出图
+saveFigure(sankey_plot, "Supplementary Fig. 2b sankey plot", width = 8.3, height = 6.8)  # 与图1相同的尺寸
+
+
+
 
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# FIGURE 3
+# 图3
 # ------------------------------------------------------------------------------
 
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# Data Analysis - Preparing Data for Figure 3
+# 数据分析部分 - 为图3准备数据
 # ------------------------------------------------------------------------------
 prepare_data_for_figure_3 <- function() {
   cat("\n=== Preparing Data for Figure 3 ===\n")
   
   data <- landslide_data_processed 
   
-  # Ensure NDVI_Biophysical_Zone is correctly defined
+  # 确保NDVI_Biophysical_Zone正确定义
   if (!"NDVI_Biophysical_Zone" %in% colnames(data) && exists("fig1_analysis_results") && "NDVI_1" %in% names(fig1_analysis_results)) {
     ndvi_result <- fig1_analysis_results[["NDVI_1"]]
     if(!is.null(ndvi_result$breakpoints) && length(ndvi_result$breakpoints) == 2){
@@ -2082,14 +2118,14 @@ prepare_data_for_figure_3 <- function() {
     stop("NDVI_Biophysical_Zone column is missing for Fig 3 and cannot be recreated.")
   }
   
-  # Prepare data for Figure 3A (scatter plot)
+  # 准备图3A的数据 (散点图)
   data_3a <- data %>% dplyr::filter(!is.na(NDVI_1), NDVI_Biophysical_Zone != "Unknown")
   
-  # Prepare data for Figure 3B (violin plot)
+  # 准备图3B的数据 (小提琴图)
   climate_ndvi_data <- data %>%
     dplyr::filter(!is.na(NDVI_1), !is.na(Climate_Zone), Climate_Zone != "Other")
   
-  # --- Supplementary Figure Y: Faceted Breakpoint Analysis by Climate Zone ---
+  # --- 补充图Y: 按气候带的分面断点分析 ---
   cat("--- Generating Supplementary Figure Y: Faceted Breakpoint Analysis ---\n")
   
   climate_zones <- c("Temperate", "Arid", "Tropical")
@@ -2124,10 +2160,10 @@ prepare_data_for_figure_3 <- function() {
     cat("Warning: Could not generate faceted plots for any climate zones.\n")
   }
   
-  # Initialize variables for the return list
+    # 初始化返回列表中的变量
   seasonal_summary <- NULL
   
-  # Prepare data for Figure 3C (seasonal distribution)
+  # 准备图3C的数据 (季节性)
   if(!"Season" %in% colnames(data)){
     warning("Season column not found. Cannot prepare data for Figure 3D.")
   } else {
@@ -2160,9 +2196,9 @@ prepare_data_for_figure_3 <- function() {
         dplyr::group_by(NDVI_Category) %>%
         tidyr::nest() %>%
         dplyr::mutate(
-          # Safely apply the test using purrr::map
+          # 使用purrr::map安全地应用检验
           chi_sq_result = purrr::map(data, ~ tryCatch(chisq.test(.x$Count), error = function(e) NULL)),
-          # Extract results only if the test was successful
+          # 仅在检验成功时提取结果
           is_success = !purrr::map_lgl(chi_sq_result, is.null)
         ) %>%
         dplyr::filter(is_success) %>%
@@ -2181,12 +2217,12 @@ prepare_data_for_figure_3 <- function() {
     }
   }
   
-  # Initialize variables in case subsequent steps fail
+  # 初始化返回列表中的变量，以防后续步骤失败
   temporal_summary <- NULL
   temporal_change_annotations <- NULL
   
-  # Prepare data for Figure 3D (time series)
-  temporal_cols <- paste0("NDVI_", 5:1)  # Change order from 5 to 1
+  # 准备图3D的数据 (时间序列)
+  temporal_cols <- paste0("NDVI_", 5:1)  # 修改为从5到1的顺序
   if(!all(temporal_cols %in% colnames(data))){
     warning("Temporal NDVI columns (NDVI_1 to NDVI_5) not found. Cannot prepare data for Figure 3C.")
   } else {
@@ -2197,7 +2233,7 @@ prepare_data_for_figure_3 <- function() {
       dplyr::filter(!is.na(NDVI_Value)) %>%
       dplyr::mutate(Time_Window = gsub("NDVI_", "T", Time_Window_Raw),
                     Time_Window_Num = as.numeric(gsub("NDVI_", "", Time_Window_Raw))) %>%
-      # Add a reverse-order index for sorting
+      # 添加反向顺序的索引，用于排序
       dplyr::mutate(Reverse_Time_Window_Num = 6 - Time_Window_Num)  
     
     if(nrow(temporal_data_long) > 0){
@@ -2210,19 +2246,19 @@ prepare_data_for_figure_3 <- function() {
           N = n(),
           .groups = "drop"
         ) %>% 
-        # Sort in reverse order
+        # 按反向顺序排序
         dplyr::arrange(NDVI_Biophysical_Zone, desc(Time_Window_Num))
       saveTable(temporal_summary, "Statistics_Fig3D_temporal_summary")
       cat("✓ temporal_summary results saved to 'tables/' directory.\n")
       
       temporal_change_annotations <- temporal_summary %>%
         dplyr::group_by(NDVI_Biophysical_Zone) %>%
-        # Sort in reverse order
+        # 按反向顺序排序
         dplyr::arrange(desc(Time_Window_Num)) %>%
         dplyr::mutate(Prev_Mean_NDVI = lag(Mean_NDVI),
                       Percent_Change = ifelse(is.na(Prev_Mean_NDVI) | Prev_Mean_NDVI == 0, NA, 
                                               (Mean_NDVI - Prev_Mean_NDVI) / Prev_Mean_NDVI * 100)) %>%
-        # We are moving from large to small, so we select < 5 instead of > 1
+        # 注意：现在我们是从大到小，所以要选择小于而不是大于1
         dplyr::filter(Time_Window_Num < 5 & !is.na(Percent_Change) & abs(Percent_Change) > 2) 
       saveTable(temporal_change_annotations, "Statistics_Fig3D_temporal_change_annotations")
       cat("✓ temporal_change_annotations results saved to 'tables/' directory.\n")
@@ -2232,7 +2268,7 @@ prepare_data_for_figure_3 <- function() {
       
       mk_results <- temporal_data_long %>%
         dplyr::group_by(OBJECTID, NDVI_Biophysical_Zone) %>%
-        # Sort in reverse order
+        # 按反向顺序排序
         dplyr::arrange(desc(Time_Window_Num)) %>%
         dplyr::filter(n() >= 4) %>%
         dplyr::summarise(
@@ -2258,6 +2294,8 @@ prepare_data_for_figure_3 <- function() {
     }
   }
   
+
+  
   cat("✓ Data preparation for Figure 3 completed\n")
   
   return(list(
@@ -2266,31 +2304,33 @@ prepare_data_for_figure_3 <- function() {
     data_3c = seasonal_summary,
     data_3d_summary = temporal_summary,
     data_3d_annotations = temporal_change_annotations
+
   ))
 }
 
-# Run the data preparation function
+# 运行数据准备函数
 figure_3_data <- prepare_data_for_figure_3()
 
 
 # ------------------------------------------------------------------------------
-# Visualization - Plotting Figure 3 (Final Refined Version)
+# 可视化部分 - 绘制图3（最终完善版本）
 # ------------------------------------------------------------------------------
 
 create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8) {
   cat("\n=== Creating Figure 3 Visualization with Expert Refinements ===\n")
   
-  # Ensure the 'figures' directory exists
+  # 确保figures目录存在
   if (!dir.exists("figures")) {
     dir.create("figures")
     cat("Created 'figures' directory\n")
   }
   
-  # Set color configurations
+  # 设置颜色配置
   biophysical_zone_colors <- c("IDZ" = "#3B9AB2", "CTZ" = "#E14D55", "SDZ" = "#21A764")
+  
   season_colors <- c("Winter" = "#D3DDEA", "Spring" = "#B9DCC9", "Summer" = "#A5D2E5", "Fall" = "#F5C0B8")
   
-  # Figure 3A: Vegetation Index Distribution - Legend at the bottom
+  # 图3A: 植被指数分布 - 图例放在底部
   if(!is.null(figure_data$data_3a) && nrow(figure_data$data_3a) > 0) {
     plot_3a <- ggplot(figure_data$data_3a, 
                       aes(x = NDVI_1, fill = NDVI_Biophysical_Zone, color = NDVI_Biophysical_Zone)) +
@@ -2302,8 +2342,8 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
       theme(
         legend.position = c(0.22, 0.8),
         legend.box = "horizontal",
-        legend.title = element_text(size = 9),
-        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9), # Control legend title size
+        legend.text = element_text(size = 8),  # Control legend label size
         legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0),
         legend.box.margin = ggplot2::margin(t = -5)
       ) +
@@ -2313,7 +2353,9 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
       annotate("text", x = 0.5, y = 0.5, label = "No data available", size = 3)
   }
   
-  # Figure 3B: NDVI Distribution by Climate Zone with Statistics
+  # [!] 这是修正后的完整代码块，用于生成图3B
+  # [!] This is the fully revised code block for Figure 3B, now with statistical export
+  
   # Check if data for Figure 3B exists
   if (!is.null(figure_3_data$data_3b) && nrow(figure_3_data$data_3b) > 0) {
     
@@ -2328,7 +2370,7 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
     # Use the full, original dataset for all statistics
     stats_data <- figure_3_data$data_3b
     
-    # --- Step 1B: Calculate and Save Key Statistics ---
+    # --- Step 1B: Calculate and Save Key Statistics (NEW SECTION) ---
     cat("--- Calculating and saving statistics for Figure 3B ---\n")
     
     # 1B.1: Calculate descriptive statistics for each climate zone
@@ -2352,6 +2394,7 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
     cat("✓ Descriptive statistics saved.\n")
     
     # 1B.2: Perform Kruskal-Wallis and subsequent pairwise Dunn's test
+    # The 'dunn.test' package is great for this. Make sure it's installed.
     if(!require(dunn.test)) { install.packages("dunn.test"); library(dunn.test) }
     
     kw_test <- kruskal.test(NDVI_1 ~ Climate_Zone, data = stats_data)
@@ -2373,7 +2416,8 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
     saveTable(dunn_summary, "Supplementary_Table_3b_Pairwise_Dunn_Test")
     cat("✓ Pairwise comparison results saved.\n")
     
-    # --- End of statistics section ---
+    # --- End of new statistics section ---
+    
     
     # 2. Data Preparation for Plotting (Subsampling)
     data_for_plot <- stats_data %>%
@@ -2392,7 +2436,7 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
     # Prepare p-value text for the plot title
     p_value_text <- ifelse(kw_test$p.value < 0.001, "p < 0.001", paste0("p = ", format(kw_test$p.value, digits = 3)))
     
-    # 3. Core Plotting Code
+    # 3. Core Plotting Code (no changes needed here)
     plot_3b <- ggplot(data_for_plot, aes(x = Climate_Zone_Label, y = NDVI_1, fill = Climate_Zone, color = Climate_Zone)) +
       geom_jitter(width = 0.25, alpha = 0.05, size = 1, show.legend = FALSE) +
       geom_violin(trim = FALSE, alpha = 0.5, show.legend = FALSE) +
@@ -2414,15 +2458,15 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
   # Print or display the plot
   print(plot_3b)
   
-  # Figure 3C: Seasonal Distribution - Legend at the bottom, x-axis labels on two lines
+  # 图3C: 季节分布 - 图例放在底部，x轴标签分两行显示
   if(!is.null(figure_data$data_3c) && nrow(figure_data$data_3c) > 0) {
-    # Modify NDVI category labels to display on two lines
+    # 修改NDVI分类标签，分两行显示
     figure_data$data_3c$NDVI_Category_2line <- factor(
       figure_data$data_3c$NDVI_Category,
       levels = c("Low (0-0.3)", "Moderate (0.3-0.6)", "High (0.6-0.8)", "Very High (0.8-1)"),
       labels = c("Low\n(0-0.3)", "Moderate\n(0.3-0.6)", "High\n(0.6-0.8)", "Very High\n(0.8-1)")
     )
-    # Calculate the total sample size for each NDVI category
+    # 计算每个NDVI分类的总样本量
     ndvi_counts <- figure_data$data_3c %>%
       group_by(NDVI_Category) %>%
       dplyr::summarise(
@@ -2440,13 +2484,13 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
       theme(
         legend.position = "bottom",
         legend.box = "horizontal",
-        legend.title = element_text(size = 8),
-        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8), # Control legend title size
+        legend.text = element_text(size = 7),  # Control legend label size
         legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0),
         legend.box.margin = ggplot2::margin(t = -5),
-        axis.text.x = element_text(angle = 0, hjust = 0.5)  # Display labels horizontally
+        axis.text.x = element_text(angle = 0, hjust = 0.5)  # 水平显示标签
       ) +
-      # Add sample size information below the bars
+      # 在柱子下方添加样本量信息
       annotate("text", 
                x = levels(figure_data$data_3c$NDVI_Category_2line), 
                y = -0.03,
@@ -2459,11 +2503,11 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
   }
   
   
-  # Figure 3D: Time Series Analysis - Legend at the bottom
-  if(!is.null(figure_data$data_3d_summary) && nrow(figure_data$data_3d_summary) > 0) {
-    # Key modification: Create detailed X-axis labels
+  # 图3D: 时间序列分析 - 图例放在底部
+  if(!is.null(figure_3_data$data_3d_summary) && nrow(figure_3_data$data_3d_summary) > 0) {
+    # [!] 核心修改部分：创建详细的X轴标签
     # --------------------------------------------------------------------------
-    # 1. Define the day range for each time window
+    # 1. 定义时间窗口的天数范围
     time_window_days <- c(
       "T5" = "(80-64 days)",
       "T4" = "(64-48 days)",
@@ -2472,59 +2516,62 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
       "T1" = "(16-0 days)"
     )
     
-    # 2. Create a label vector with line breaks, ordered to match the X-axis (T5 -> T1)
+    # 2. 创建一个包含换行符的标签向量，顺序与X轴一致 (T5 -> T1)
     detailed_x_labels <- paste0(
       names(time_window_days),    # T5, T4, ...
-      "\n",                       # Line break
+      "\n",                       # 换行符
       time_window_days            # (64-80 days), ...
     )
-    # --------------------------------------------------------------------------
+    # -------
+    # Assuming biophysical_zone_colors is defined in your environment
+    # e.g., biophysical_zone_colors <- nature_palettes$biophysical_zones
     
-    plot_3d <- ggplot(figure_data$data_3d_summary, 
+    plot_3d <- ggplot(figure_3_data$data_3d_summary, 
                       aes(x = reorder(Time_Window, -Time_Window_Num), y = Mean_NDVI, 
                           group = NDVI_Biophysical_Zone, color = NDVI_Biophysical_Zone)) +
       geom_ribbon(aes(ymin = CI_Lower, ymax = CI_Upper, fill = NDVI_Biophysical_Zone), alpha = 0.2, color = NA) +
       geom_vline(xintercept = "T1", linetype = "dashed", color = "pink") +
       geom_line(linewidth = 1.2) +
       geom_point(size = 2.5) +
-      # Adjust label position, moving it up and to the left
+      # 修改这里：调整标签位置，向左上方移动
       geom_text(data = figure_data$data_3d_annotations,
                 aes(label = sprintf("%+.1f%%", Percent_Change)),
-                vjust = 1.8, hjust = 0.6, # Add hjust=0.8 to move label left
-                nudge_x = -0.15, # Nudge label to the left
+                vjust = 1.8, hjust = 0.6, # 添加hjust=0.8让标签向左移动
+                nudge_x = -0.15, # 向左移动标签
                 size = 2.5, fontface = "bold", show.legend = FALSE) +
       
-      # Use coord_cartesian to get y-min for annotation placement
-      annotate("text", x = "T1", y = 0.51, # Set specific position since axis starts at 0.5
+      # Use coord_cartesian to get the y-min for annotation placement
+      annotate("text", x = "T1", y = 0.51, # Set a specific position since axis starts at 0.5
                label = "Landslide Event Proximal", hjust = 1.05, vjust = -12, size = 3, color="grey30", fontface="italic") +
-      # Use the newly created labels in scale_x_discrete
+      # [!] 在 scale_x_discrete 中使用我们新创建的 labels
       # --------------------------------------------------------------------------
-    scale_x_discrete(
-      name = "Time Window (days before event)", # Update X-axis title
-      labels = detailed_x_labels,            # Use new labels
-      expand = expansion(mult = c(0.1, 0.15)) # Adjust left/right padding to accommodate labels
-    ) +
+      scale_x_discrete(
+        name = "Time Window (days before event)", # 更新X轴标题
+        labels = detailed_x_labels,            # 使用新标签
+        expand = expansion(mult = c(0.1, 0.15)) # 调整左右留白以容纳标签
+      ) +
       # --------------------------------------------------------------------------
-    # Add right-side padding
-    coord_cartesian(ylim = c(0.5, NA), clip = "off") + # Keep clip="off" to allow text to expand if needed
+      # --- 修改这里：增加右侧留白 ---
+      coord_cartesian(ylim = c(0.5, NA), clip = "off") + # 保持clip="off"以便文字能够在需要时扩展
+      #scale_x_discrete(expand = expansion(mult = c(0.05, 0.05))) + # 右侧增加更多留白
       
       scale_color_manual(values = biophysical_zone_colors) +
       scale_fill_manual(values = biophysical_zone_colors) +
       nature_theme_professional +
       
-      # Adjust legend font size
+      # --- CHANGE 2: Adjust legend font size ---
       theme(
         legend.position = "bottom",
         legend.box = "horizontal",
-        legend.title = element_text(size = 8),
-        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8), # Control legend title size
+        legend.text = element_text(size = 7),  # Control legend label size
         axis.text.x = element_text(
-          lineheight = 0.9, # Line height, important for multi-line text
-          size = 8          # Adjust size from 7 to 8
+          lineheight = 0.9, # 行高，对于多行文字很重要
+          size = 8          # 将大小从 7 调整为 8
         ),
         legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = -2),
         legend.box.margin = ggplot2::margin(t = -5),
-        # Add this line to ensure labels are not cropped
+        # 添加这一行以确保标签不会被裁剪
         plot.margin = ggplot2::margin(t = 5, r = 0, b = 0, l = 5)
       ) +
       labs(x = "Time Window", y = "Mean NDVI (95% CI)", color = "Biophysical Zone", fill = "Biophysical Zone")
@@ -2535,16 +2582,18 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
   }
   print(plot_3d)
   
-  
-  # Combine all plots
+
+  # 组合所有图形
   final_figure <- (plot_3a | plot_3b) / (plot_3c | plot_3d) +
+    #plot_layout(guides = 'collect') + # Helps with aligning plots that have legends
     plot_annotation(tag_levels = list(paste0("(", letters, ")"))) &
     theme(
       plot.tag = element_text(face = "bold", size = 10),
       plot.margin = ggplot2::margin(t = 5, r = 5, b = 0, l = 5) # Reduce margins around each plot
-    )
+      )
   
-  # Save the figure to the 'figures' folder
+  # 保存图形到figures文件夹
+  # 也保存各个子图以便单独使用
   saveFigure(final_figure, "My_Final_Figure_3_A4", width = 8.3, height = 6.8)
   
   cat("✓ Figure 3 visualization with expert refinements completed successfully\n")
@@ -2554,7 +2603,7 @@ create_figure_3_visualization <- function(figure_data, width = 8.3, height = 6.8
 }
 
 
-# Create the final figure
+# 创建最终图形
 figure_3_final <- create_figure_3_visualization(figure_3_data)
 
 
@@ -2568,274 +2617,22 @@ figure_3_final <- create_figure_3_visualization(figure_3_data)
 # Contribution: Demonstrates predictability and confirms VI importance independently.
 # -------------------------------------------------------------------------
 
-
 # =========================================================================
-# FIGURE 4
-# =========================================================================
-# Part 0: Model Training Function (16 features)
-# Task: Prepare data, perform cross-validation, train the final model, and save all results.
-# =========================================================================
-run_fig4_modeling_16f <- function() {
-  cat("\n=== RUNNING MODELING FOR FIGURE 4 (16 FEATURES) ===\n")
-  
-  # --- 0. Data and Environment Preparation ---
-  if (!exists("landslide_data_processed")) {
-    stop("Required data `landslide_data_processed` not found.")
-  }
-  data <- landslide_data_processed
-  
-  # --- 1. Create non-circular target variable (Landslide Density Proxy) ---
-  cat("Step 1: Creating non-circular target variable...\n")
-  ndvi_values_for_kde <- data$NDVI_1[!is.na(data$NDVI_1) & data$NDVI_1 >= 0 & data$NDVI_1 <= 1]
-  if (length(ndvi_values_for_kde) < 50) stop("Insufficient valid NDVI data for target variable.")
-  
-  kde <- density(ndvi_values_for_kde, from = 0, to = 1, n = 101, bw = "SJ")
-  ndvi_density_df <- data.frame(NDVI_Value_Grid = kde$x, Density_Target = kde$y)
-  ndvi_density_df$Density_Target <- scales::rescale(ndvi_density_df$Density_Target)
-  
-  data$NDVI_1_Rounded <- round(data$NDVI_1, 2)
-  ndvi_density_df$NDVI_Value_Grid_Rounded <- round(ndvi_density_df$NDVI_Value_Grid, 2)
-  
-  model_data <- data %>%
-    filter(!is.na(NDVI_1)) %>%
-    left_join(ndvi_density_df %>% dplyr::select(NDVI_Value_Grid_Rounded, Density_Target),
-              by = c("NDVI_1_Rounded" = "NDVI_Value_Grid_Rounded")) %>%
-    filter(!is.na(Density_Target))
-  
-  # --- 2. Feature selection and data preparation ---
-  cat("Step 2: Preparing modeling data...\n")
-  features <- c("EVI_1", "EVI_2", "LAI_1", "LAI_2", "MODIS_IGBP_Simplified", "Climate_Zone", "Season", 
-                "NDVI_change_1_to_2", "EVI_change_1_to_2", "LAI_change_1_to_2", "NDVI_change_2_to_3", 
-                "EVI_change_2_to_3", "LAI_change_2_to_3","Copernicus_LC_Class","Continent",
-                "Hansen_Tree_Cover_2000_Percent")
-  
-  features <- intersect(features, colnames(model_data))
-  if (length(features) == 0) stop("No valid features found for modeling.")
-  
-  modeling_df_full <- model_data %>%
-    dplyr::select(all_of(features), Density_Target, Latitude, Longitude, OBJECTID) %>%
-    na.omit() %>%
-    mutate(across(where(is.character), as.factor))
-  
-  if (nrow(modeling_df_full) < 200) stop("Insufficient data (n=", nrow(modeling_df_full), ") for modeling.")
-  
-  # --- 3. Robust spatial cross-validation ---
-  cat("Step 3: Performing spatial cross-validation...\n")
-  set.seed(123)
-  q_lat <- unique(quantile(modeling_df_full$Latitude, probs = 0:5/5, na.rm = TRUE))
-  if (length(q_lat) < 3) {
-    modeling_df_full$Fold <- sample(1:5, nrow(modeling_df_full), replace = TRUE)
-  } else {
-    modeling_df_full$Fold <- as.numeric(cut(modeling_df_full$Latitude, breaks = q_lat, include.lowest = TRUE))
-  }
-  modeling_df_full$Fold[is.na(modeling_df_full$Fold)] <- sample(1:5, sum(is.na(modeling_df_full$Fold)), replace = TRUE)
-  
-  all_predictions <- data.frame()
-  feature_importance_list <- list()
-  
-  for (k in 1:5) {
-    cat("  Processing fold:", k, "...\n")
-    train_data <- modeling_df_full[modeling_df_full$Fold != k, ]
-    test_data <- modeling_df_full[modeling_df_full$Fold == k, ]
-    
-    current_formula <- as.formula(paste("Density_Target ~", paste(features, collapse = " + ")))
-    rf_model <- randomForest(current_formula, data = train_data, ntree = 200, importance = TRUE)
-    
-    predictions <- predict(rf_model, test_data)
-    all_predictions <- rbind(all_predictions, data.frame(Actual = test_data$Density_Target, Predicted = predictions, Fold = k))
-    
-    imp <- randomForest::importance(rf_model, type = 1)
-    feature_importance_list[[k]] <- data.frame(Feature = rownames(imp), Importance = imp[, 1])
-  }
-  if (nrow(all_predictions) == 0) stop("All modeling folds failed.")
-  
-  # --- 4. Train the final global model ---
-  cat("Step 4: Training final model and preparing data for plots...\n")
-  validation_rf <- randomForest(Density_Target ~ ., data = modeling_df_full %>% dplyr::select(all_of(features), Density_Target),
-                                ntree = 500, importance = TRUE)
-  
-  # --- 5. Prepare and save all data required for plotting ---
-  cat("Step 5: Saving all modeling results for plotting...\n")
-  
-  # Prepare data for Panel C
-  avg_importance <- bind_rows(feature_importance_list) %>%
-    group_by(Feature) %>%
-    dplyr::summarise(Mean_Importance = mean(Importance, na.rm = TRUE), SD_Importance = sd(Importance, na.rm = TRUE), .groups = "drop") %>%
-    arrange(desc(Mean_Importance))
-  
-  # Prepare data for Panel D
-  modeling_df_full$Predicted_Density <- predict(validation_rf, modeling_df_full %>% dplyr::select(all_of(features)))
-  pdp_plot_data <- modeling_df_full %>%
-    dplyr::select(OBJECTID, Predicted_Density) %>%
-    left_join(model_data %>% dplyr::select(OBJECTID, NDVI_1), by = "OBJECTID")
-  pdp_summary <- pdp_plot_data %>%
-    filter(!is.na(NDVI_1)) %>%
-    group_by(NDVI_Value = round(NDVI_1, 2)) %>%
-    dplyr::summarise(Mean_Predicted_Density = mean(Predicted_Density, na.rm = TRUE), .groups = "drop") %>%
-    filter(!is.na(NDVI_Value))
-  
-  # Package all results into a list
-  fig4_results_data <- list(
-    all_predictions = all_predictions,       # For Panels A and B
-    avg_importance = avg_importance,         # For Panel C
-    pdp_summary = pdp_summary,               # For Panel D
-    analysis_results_global = fig1_analysis_results # Pass results from Figure 1
-  )
-  
-  # Create directory and save
-  dir.create("models", showWarnings = FALSE)
-  saveRDS(fig4_results_data, "models/fig4_plotting_data_16f.rds")
-  # Also save the final model and features for Figure 5
-  saveRDS(validation_rf, "models/best_landslide_bz_model_16f.rds")
-  saveRDS(features, "models/model_features_16f.rds")
-  saveRDS(modeling_df_full %>% dplyr::select(all_of(features)), "models/training_data_snapshot_16f.rds")
-  
-  cat("✓ Modeling complete. All results saved to 'models/fig4_plotting_data_16f.rds'.\n")
-}
-
-# Ensure landslide_data_processed and fig1_analysis_results objects exist
-run_fig4_modeling_16f() 
-
-
-# =========================================================================
-# Part 2: Plotting Function
-# Task: Load saved model results, generate the four panels of Figure 4, and create the final composite plot.
-# =========================================================================
-create_fig4_plots_16f <- function() {
-  cat("\n=== CREATING PLOTS FOR FIGURE 4 (16 FEATURES) ===\n")
-  
-  # --- 1. Load pre-computed modeling results ---
-  cat("Step 1: Loading pre-computed modeling results...\n")
-  results_path <- "models/fig4_plotting_data_16f.rds"
-  if (!file.exists(results_path)) {
-    stop("Plotting data not found. Please run `run_fig4_modeling_16f()` first.")
-  }
-  fig4_data <- readRDS(results_path)
-  
-  # Unpack data from the list for easier use
-  all_predictions <- fig4_data$all_predictions
-  avg_importance <- fig4_data$avg_importance
-  pdp_summary <- fig4_data$pdp_summary
-  analysis_results_global <- fig4_data$fig1_analysis_results
-  
-  # --- 2. Generate the four visualization panels ---
-  cat("Step 2: Generating visualization panels...\n")
-  
-  # --- Panel A: Prediction Performance ---
-  r_squared <- cor(all_predictions$Actual, all_predictions$Predicted)^2
-  rmse <- sqrt(mean((all_predictions$Actual - all_predictions$Predicted)^2))
-  plot_4a <- ggplot(all_predictions, aes(x = Actual, y = Predicted)) +
-    geom_point(alpha = 0.4, color = "darkcyan", size = 1.5) +
-    geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red", linewidth = 1) +
-    geom_smooth(method = "lm", color = "blue", se = TRUE, fill = "lightblue", alpha = 0.2) +
-    annotate("text", x = 0.05, y = 0.95 * max(all_predictions$Predicted, na.rm=T),
-             label = paste0("R² = ", round(r_squared, 3), "\nRMSE = ", round(rmse, 3)),
-             hjust = 0, size = 3.5, fontface = "bold") +
-    labs(x = "Actual Landslide Density (Proxy)", y = "Predicted Landslide Density (Proxy)") +
-    nature_theme_professional
-  
-  # --- Panel B: Residual Analysis ---
-  all_predictions$Residual <- all_predictions$Predicted - all_predictions$Actual
-  plot_4b <- ggplot(all_predictions, aes(x = Residual, fill = factor(Fold))) +
-    geom_density(alpha = 0.6, color = "black", linewidth = 0.2) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 1) +
-    scale_fill_viridis_d(name = "CV Fold") +
-    labs(x = "Residual (Predicted - Actual)", y = "Density") +
-    nature_theme_professional +
-    # Move legend to the upper right corner inside the plot area
-    theme(legend.position = c(0.89, 0.75),
-          legend.background = element_rect(fill = "white", color = "gray90"),
-          legend.margin = ggplot2::margin(5, 5, 5, 5))
-  
-  # --- Panel C: Feature Importance ---
-  avg_importance$Category <- case_when(
-    grepl("EVI_1|LAI_1", avg_importance$Feature) ~ "Vegetation Indices",
-    grepl("change", avg_importance$Feature) ~ "Temporal Changes",
-    grepl("Hansen|MODIS", avg_importance$Feature) ~ "Vegetation Types",
-    TRUE ~ "Environmental"
-  )
-  feature_palette <- setNames(c("#3B6F9E", "#D85C60", "#63A27D", "#E8A354"), 
-                              c("Environmental", "Temporal Changes", "Vegetation Indices", "Vegetation Types"))
-  
-  # Simplify x-axis labels for panel C
-  # Create a simplified feature name column
-  avg_importance$SimpleFeature <- gsub("NDVI_change_1_to_2", "Nc1t2", avg_importance$Feature)
-  avg_importance$SimpleFeature <- gsub("EVI_change_1_to_2", "Ec1t2", avg_importance$SimpleFeature)
-  avg_importance$SimpleFeature <- gsub("LAI_change_1_to_2", "Lc1t2", avg_importance$SimpleFeature)
-  avg_importance$SimpleFeature <- gsub("Hansen_Tree_Cover_2000_Percent", "HTC2P", avg_importance$SimpleFeature)
-  avg_importance$SimpleFeature <- gsub("Climate_Zone", "CliZ", avg_importance$SimpleFeature)
-  avg_importance$SimpleFeature <- gsub("MODIS_IGBP_Simplified", "IGBPS", avg_importance$SimpleFeature)
-  
-  plot_4c <- ggplot(head(avg_importance, 16), aes(x = reorder(SimpleFeature, Mean_Importance), y = Mean_Importance, fill = Category)) +
-    geom_col(width = 0.7) +
-    geom_errorbar(aes(ymin = pmax(0, Mean_Importance - SD_Importance), ymax = Mean_Importance + SD_Importance), width = 0.25, color = "gray20") +
-    ggrepel::geom_text_repel(aes(label=sprintf("%.1f", Mean_Importance)), 
-                             hjust = -0.3,
-                             size=3, fontface="bold", color="black",
-                             direction = "y", 
-                             nudge_x = 0.3,
-                             box.padding = 0.1,
-                             point.padding = 0.1,
-                             segment.curvature = -0.1,
-                             segment.ncp = 3,
-                             segment.angle = 20,
-                             segment.size = 0.2, min.segment.length = 0) + 
-    coord_flip(ylim = c(0, max(avg_importance$Mean_Importance, na.rm = TRUE) * 1.15), clip = "off") +
-    scale_fill_manual(values = feature_palette) +
-    labs(x = "Feature", y = "Importance (Mean %IncMSE)") +
-    nature_theme_professional +
-    theme(legend.position = "bottom", 
-          panel.grid.major.y = element_blank(), 
-          axis.text.y = element_text(size = 9),
-          # Remove the legend title
-          legend.title = element_blank())
-  
-  # --- Panel D: NDVI Threshold Validation ---
-  ndvi_breakpoints <- analysis_results_global$NDVI_1$breakpoints
-  
-  plot_4d <- ggplot(pdp_summary, aes(x = NDVI_Value, y = Mean_Predicted_Density)) +
-    geom_line(color = "darkgreen", linewidth = 1.5, alpha = 0.8) +
-    geom_vline(xintercept = ndvi_breakpoints, linetype = "dashed", color = "red", linewidth = 0.8) +
-    annotate("rect", xmin = ndvi_breakpoints[1], xmax = ndvi_breakpoints[2],
-             ymin = -Inf, ymax = Inf, fill = "red", alpha = 0.1) +
-    annotate("text", x = mean(ndvi_breakpoints) + 0.08, y = max(pdp_summary$Mean_Predicted_Density, na.rm=T) * 0.9,
-             label = "Fig 1 Critical Transition Zone", color = "red", size = 3, fontface = "bold", hjust=1.3) +
-    labs(x = "NDVI Value", y = "Predicted Landslide Density (Proxy)") +
-    nature_theme_professional
-  
-  # --- 3. Assemble and save the final Figure 4 ---
-  cat("Step 3: Assembling and saving final figure...\n")
-  main_fig4 <- (plot_4a | plot_4b) / (plot_4c | plot_4d) +
-    plot_annotation(tag_levels = list(paste0("(", letters, ")"))) &
-    theme(plot.tag = element_text(face = "bold", size = 12))
-  
-  saveFigure(main_fig4, "Main_Figure_4_Modular_16f", width = 8.3, height = 6.8)
-  
-  cat("✓ Figure 4 (16f) plotting complete.\n")
-  
-  return(main_fig4)
-}
-
-# This function reads data from the file, so it runs quickly.
-my_figure_4_16f <- create_fig4_plots_16f()
-
-
-# =========================================================================
-# Part 1: Model Training Function (Standard Features)
-# Task: Prepare data, perform cross-validation, train the final model, and save all results.
+# Part 1: 模型训练函数
+# 任务: 准备数据，执行交叉验证，训练最终模型，并保存所有结果
 # =========================================================================
 run_fig4_modeling <- function() {
-  cat("\n=== RUNNING MODELING FOR FIGURE 4 (STANDARD FEATURES) ===\n")
+  cat("\n=== RUNNING MODELING FOR FIGURE 4 ===\n")
   # Ensure necessary packages are available
   if (!require(pROC, quietly = TRUE)) { install.packages("pROC", quiet = TRUE); library(pROC) }
   
-  # --- 0. Data and Environment Preparation ---
+  # --- 0. 数据和环境准备 ---
   if (!exists("landslide_data_processed")) {
     stop("Required data `landslide_data_processed` not found.")
   }
   data <- landslide_data_processed
   
-  # --- 1. Create non-circular target variable (Landslide Density Proxy) ---
+  # --- 1. 创建非循环的目标变量 (Landslide Density Proxy) ---
   cat("Step 1: Creating non-circular target variable...\n")
   ndvi_values_for_kde <- data$NDVI_1[!is.na(data$NDVI_1) & data$NDVI_1 >= 0 & data$NDVI_1 <= 1]
   if (length(ndvi_values_for_kde) < 50) stop("Insufficient valid NDVI data for target variable.")
@@ -2853,7 +2650,7 @@ run_fig4_modeling <- function() {
               by = c("NDVI_1_Rounded" = "NDVI_Value_Grid_Rounded")) %>%
     filter(!is.na(Density_Target))
   
-  # --- 2. Feature selection and data preparation ---
+  # --- 2. 特征选择与数据准备 ---
   cat("Step 2: Preparing modeling data...\n")
   features <- c("EVI_1", "LAI_1", "MODIS_IGBP_Simplified", "Climate_Zone", "Season", 
                 "NDVI_change_1_to_2", "EVI_change_1_to_2", "LAI_change_1_to_2",
@@ -2869,7 +2666,7 @@ run_fig4_modeling <- function() {
   
   if (nrow(modeling_df_full) < 200) stop("Insufficient data (n=", nrow(modeling_df_full), ") for modeling.")
   
-  # --- 3. Robust spatial cross-validation ---
+  # --- 3. 稳健的空间交叉验证 ---
   cat("Step 3: Performing spatial cross-validation...\n")
   set.seed(123)
   q_lat <- unique(quantile(modeling_df_full$Latitude, probs = 0:5/5, na.rm = TRUE))
@@ -2881,13 +2678,16 @@ run_fig4_modeling <- function() {
   modeling_df_full$Fold[is.na(modeling_df_full$Fold)] <- sample(1:5, sum(is.na(modeling_df_full$Fold)), replace = TRUE)
   
   
-  # --- Create a binary target for classification task ---
+  # <<< NEW SECTION START >>>
+  # Create a binary target for classification task
   bz_threshold <- quantile(modeling_df_full$Density_Target, 0.8)
   modeling_df_full$Zone_Class <- factor(
     ifelse(modeling_df_full$Density_Target >= bz_threshold, "CT_Zone", "Not_CT_Zone"),
     levels = c("Not_CT_Zone", "CT_Zone") # Set "Not_CT_Zone" as the reference level
   )
   cat(paste0("--- Created binary classification target 'Zone_Class' with threshold: ", round(bz_threshold, 3), " ---\n"))
+  # <<< NEW SECTION END >
+  
   
   # Initialize storage for results from all folds
   all_regression_preds <- data.frame()
@@ -2912,7 +2712,8 @@ run_fig4_modeling <- function() {
     class_model <- randomForest(class_formula, data = train_data, ntree = 200)
     # Get class probabilities for ROC curve
     class_predictions <- predict(class_model, test_data, type = "prob")
-    # Explicitly tell roc() which level is the "case" or "event" to avoid warnings
+    # <<< CORRECTION FOR ROC WARNING >>>
+    # Explicitly tell roc() which level is the "case" or "event"
     roc_obj_fold <- roc(response = test_data$Zone_Class, predictor = class_predictions[, "CT_Zone"],
                         levels = c("Not_CT_Zone", "CT_Zone"), quiet = TRUE)
     all_classification_preds[[k]] <- data.frame(
@@ -2957,14 +2758,14 @@ run_fig4_modeling <- function() {
     plotROC::geom_roc(n.cuts = 0) +
     style_roc(theme = theme_gray) +
     theme_minimal() +
-    # Move legend to the upper right corner inside the plot area
+    # 修改点1: 将图例移到图框内右上角
     theme(legend.position = c(0.22, 0.66),
           legend.background = element_rect(fill = "white", color = "gray90"),
           legend.margin = ggplot2::margin(5, 5, 5, 5)) +
     labs(
       title = "Cross-Validated ROC Curves by Spatial Fold",
-      x = "False Positive Fraction",
-      y = "True Positive Fraction",
+      x = "False positive fraction", # Corrected label
+      y = "True positive fraction", # Corrected label
       color = "CV Fold"
     ) +
     # Use the corrected variables
@@ -2977,20 +2778,22 @@ run_fig4_modeling <- function() {
   print(roc_plot)
   saveFigure(roc_plot, "Supplementary_Fig_Z_ROC_Curve", width = 6, height = 5)
   
-  # --- 5. Prepare and save all data required for plotting ---
+  # --- 5. 准备并保存所有绘图所需的数据 ---
   cat("Step 5: Saving all modeling results for plotting...\n")
   
-  # Train the final regression model
+  # <<< CORRECTION FOR THE ERROR >>>
+  # Train the final regression model that was missing
   final_reg_formula <- as.formula(paste("Density_Target ~", paste(features, collapse = " + ")))
   validation_rf <- randomForest(final_reg_formula, data = modeling_df_full, ntree = 500, importance = TRUE)
+  # <<< END CORRECTION >>
   
-  # Prepare data for Panel C
+  # 为Panel C准备数据
   avg_importance <- bind_rows(feature_importance_list) %>%
     group_by(Feature) %>%
     dplyr::summarise(Mean_Importance = mean(Importance, na.rm = TRUE), SD_Importance = sd(Importance, na.rm = TRUE), .groups = "drop") %>%
     arrange(desc(Mean_Importance))
   
-  # Prepare data for Panel D
+  # 为Panel D准备数据
   modeling_df_full$Predicted_Density <- predict(validation_rf, modeling_df_full %>% dplyr::select(all_of(features)))
   pdp_plot_data <- modeling_df_full %>%
     dplyr::select(OBJECTID, Predicted_Density) %>%
@@ -3001,18 +2804,18 @@ run_fig4_modeling <- function() {
     dplyr::summarise(Mean_Predicted_Density = mean(Predicted_Density, na.rm = TRUE), .groups = "drop") %>%
     filter(!is.na(NDVI_Value))
   
-  # Package all results into a list
+  # 将所有结果打包到一个列表中
   fig4_results_data <- list(
-    all_predictions = all_regression_preds,       # For Panels A and B
-    avg_importance = avg_importance,         # For Panel C
-    pdp_summary = pdp_summary,               # For Panel D
-    analysis_results_global = fig1_analysis_results # Pass results from Figure 1
+    all_predictions = all_regression_preds,       # 用于 Panel A 和 B
+    avg_importance = avg_importance,         # 用于 Panel C
+    pdp_summary = pdp_summary,               # 用于 Panel D
+    analysis_results_global = fig1_analysis_results # 传递图1的结果
   )
   
-  # Create directory and save
+  # 创建目录并保存
   dir.create("models", showWarnings = FALSE)
   saveRDS(fig4_results_data, "models/fig4_plotting_data.rds")
-  # Also save the final model and features for Figure 5
+  # 另外保存最终模型和特征，供图5使用
   saveRDS(validation_rf, "models/best_landslide_bz_model.rds")
   saveRDS(features, "models/model_features.rds")
   saveRDS(modeling_df_full %>% dplyr::select(all_of(features)), "models/training_data_snapshot.rds")
@@ -3020,17 +2823,17 @@ run_fig4_modeling <- function() {
   cat("✓ Modeling complete. All results saved to 'models/fig4_plotting_data.rds'.\n")
 }
 
-# Ensure landslide_data_processed and fig1_analysis_results objects exist
+# 确保 landslide_data_processed 和 fig1_analysis_results 对象存在
 run_fig4_modeling() 
 
 # =========================================================================
-# Part 2: Plotting Function
-# Task: Load saved model results, generate the four panels of Figure 4, and create the final composite plot.
+# Part 2: 绘图函数
+# 任务: 加载已保存的模型结果，生成图4的四个面板和最终组合图
 # =========================================================================
 create_fig4_plots <- function() {
-  cat("\n=== CREATING PLOTS FOR FIGURE 4 (STANDARD FEATURES) ===\n")
+  cat("\n=== CREATING PLOTS FOR FIGURE 4 ===\n")
   
-  # --- 1. Load pre-computed modeling results ---
+  # --- 1. 加载绘图所需的数据 ---
   cat("Step 1: Loading pre-computed modeling results...\n")
   results_path <- "models/fig4_plotting_data.rds"
   if (!file.exists(results_path)) {
@@ -3038,17 +2841,17 @@ create_fig4_plots <- function() {
   }
   fig4_data <- readRDS(results_path)
   
-  # Unpack data from the list for easier use
+  # 将列表中的数据解包为独立变量，方便使用
   all_predictions <- fig4_data$all_predictions
   avg_importance <- fig4_data$avg_importance
   pdp_summary <- fig4_data$pdp_summary
   analysis_results_global <- fig4_data$fig1_analysis_results
   
-  # --- 2. Generate the four visualization panels ---
+  # --- 2. 生成四个可视化面板 (代码与您之前的版本几乎完全相同) ---
   cat("Step 2: Generating visualization panels...\n")
   
   # --- Panel A: Prediction Performance ---
-  cat("Generating visualization for Fig 4 panel A...\n")
+  cat("Generating visualization fig4 panel a...\n")
   r_squared <- cor(all_predictions$Actual, all_predictions$Predicted)^2
   rmse <- sqrt(mean((all_predictions$Actual - all_predictions$Predicted)^2))
   plot_4a <- ggplot(all_predictions, aes(x = Actual, y = Predicted)) +
@@ -3062,7 +2865,7 @@ create_fig4_plots <- function() {
     nature_theme_professional
   
   # --- Panel B: Residual Analysis ---
-  cat("Generating visualization for Fig 4 panel B...\n")
+  cat("Generating visualization fig4 panel b...\n")
   all_predictions$Residual <- all_predictions$Predicted - all_predictions$Actual
   plot_4b <- ggplot(all_predictions, aes(x = Residual, fill = factor(Fold))) +
     geom_density(alpha = 0.4, color = "black", linewidth = 0.2) +
@@ -3070,13 +2873,13 @@ create_fig4_plots <- function() {
     scale_fill_viridis_d(name = "CV Fold") +
     labs(x = "Residual (Predicted - Actual)", y = "Density") +
     nature_theme_professional +
-    # Move legend to the upper right corner inside the plot area
+    # 修改点1: 将图例移到图框内右上角
     theme(legend.position = c(0.89, 0.75),
           legend.background = element_rect(fill = "white", color = "gray90"),
           legend.margin = ggplot2::margin(5, 5, 5, 5))
   
   # --- Panel C: Feature Importance ---
-  cat("Generating visualization for Fig 4 panel C...\n")
+  cat("Generating visualization fig4 panel c...\n")
   avg_importance$Category <- case_when(
     grepl("EVI_1|LAI_1", avg_importance$Feature) ~ "Vegetation Indices",
     grepl("change", avg_importance$Feature) ~ "Temporal Changes",
@@ -3086,8 +2889,9 @@ create_fig4_plots <- function() {
   feature_palette <- setNames(c("#3B6F9E", "#D85C60", "#63A27D", "#E8A354"), 
                               c("Environmental", "Temporal Changes", "Vegetation Indices", "Vegetation Types"))
   
-  # Simplify x-axis labels for panel C
-  cat("Simplifying feature names for Fig 4 panel C...\n")
+  # 修改点2: 简化小图c的x轴标签
+  # 创建一个简化的特征名列
+  cat("Generating visualization fig4 panel c Features Name...\n")
   avg_importance$SimpleFeature <- gsub("NDVI_change_1_to_2", "Nc1t2", avg_importance$Feature)
   avg_importance$SimpleFeature <- gsub("EVI_change_1_to_2", "Ec1t2", avg_importance$SimpleFeature)
   avg_importance$SimpleFeature <- gsub("LAI_change_1_to_2", "Lc1t2", avg_importance$SimpleFeature)
@@ -3095,7 +2899,7 @@ create_fig4_plots <- function() {
   avg_importance$SimpleFeature <- gsub("Climate_Zone", "CliZ", avg_importance$SimpleFeature)
   avg_importance$SimpleFeature <- gsub("MODIS_IGBP_Simplified", "IGBPS", avg_importance$SimpleFeature)
   
-  cat("Plotting for Fig 4 panel C...\n")
+  cat("Generating visualization fig4 panel c plot...\n")
   plot_4c <- ggplot(head(avg_importance, 10), aes(x = reorder(SimpleFeature, Mean_Importance), y = Mean_Importance, fill = Category)) +
     geom_col(width = 0.7) +
     geom_errorbar(aes(ymin = pmax(0, Mean_Importance - SD_Importance), ymax = Mean_Importance + SD_Importance), width = 0.25, color = "gray20") +
@@ -3111,28 +2915,29 @@ create_fig4_plots <- function() {
                              segment.angle = 20,
                              segment.size = 0.2, min.segment.length = 0) + 
     coord_flip(ylim = c(0, max(avg_importance$Mean_Importance, na.rm = TRUE) * 1.15), clip = "off") +
+    # 修改点2: 去除图例标题
     scale_fill_manual(values = feature_palette) +
     labs(x = "Feature", y = "Importance (Mean %IncMSE)") +
     nature_theme_professional +
     theme(
       legend.position = c(0.78, 0.18),
       legend.box = "horizontal",
-      legend.title = element_text(size = 9),
-      legend.text = element_text(size = 8),
+      legend.title = element_text(size = 9), # Control legend title size
+      legend.text = element_text(size = 8),  # Control legend label size
       legend.margin = ggplot2::margin(t = 5, r = 5, b = 5, l = 5),
       legend.box.margin = ggplot2::margin(t = -5),
       panel.grid.major.y = element_blank(),
-      # Set legend background and border
+      # 添加以下行来设置图例背景和边框
       legend.background = element_rect(
-        colour = "grey80",
-        linewidth = 0.3,
-        fill = "white"
+        colour = "grey80",   # 边框颜色，可以设置为 "grey50" 或你想要的任何颜色
+        linewidth = 0.3,     # 边框宽度，可以调整
+        fill = "white"      # 图例背景填充色，默认为"white"，你可以根据需要更改
       )
     ) 
   
-  # --- Panel D: NDVI Threshold Validation ---
-  cat("Generating visualization for Fig 4 panel D...\n")
-  ndvi_breakpoints <- analysis_results_global$NDVI_1$breakpoints
+  # --- Panel D: NDVI Threshold Validation
+  cat("Generating visualization fig4 panel d...\n")
+  ndvi_breakpoints <- fig1_analysis_results$NDVI_1$breakpoints
   
   plot_4d <- ggplot(pdp_summary, aes(x = NDVI_Value, y = Mean_Predicted_Density)) +
     geom_line(color = "darkgreen", linewidth = 1.5, alpha = 0.8) +
@@ -3144,14 +2949,14 @@ create_fig4_plots <- function() {
     labs(x = "NDVI Value", y = "Predicted Landslide Density (Proxy)") +
     nature_theme_professional
   
-  # --- 3. Assemble and save the final Figure 4 ---
+  # --- 3. 组合最终的Figure 4 ---
   cat("Step 3: Assembling and saving final figure...\n")
   main_fig4 <- (plot_4a | plot_4b) / (plot_4c | plot_4d) +
     plot_annotation(tag_levels = list(paste0("(", letters, ")"))) &
     theme(
       plot.tag = element_text(face = "bold", size = 10),
       plot.margin = ggplot2::margin(t = 5, r = 5, b = 0, l = 5) # Reduce margins around each plot
-    )
+      )
   
   saveFigure(main_fig4, "Main_Figure_4_Modular", width = 8.3, height = 6.8)
   
@@ -3160,5 +2965,6 @@ create_fig4_plots <- function() {
   return(main_fig4)
 }
 
-# This function reads data from the file, so it runs quickly.
+# 这个函数会从文件中读取数据，运行速度很快
 my_figure_4 <- create_fig4_plots()
+
