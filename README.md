@@ -33,7 +33,7 @@ This repository contains the data, code, and supplementary materials for a globa
     ├── Supplementary_Table_*.csv         # Supplementary statistical tables
     ├── Grid_RF_*.csv                     # Random Forest model outputs
     ├── RF_*.csv                          # Feature importance results
-    ├── GGIG_Catalog_Metadata.csv         # Data catalog metadata
+    ├── GGIG_Catalog_Metadata.csv         # GGIG regional catalog metadata
     ├── Slope_Stratified_Zone_Distribution.csv
     └── Zone_NDVI_Change_Significance_Tests.csv
 ```
@@ -43,7 +43,7 @@ This repository contains the data, code, and supplementary materials for a globa
 | Dataset | Source | Period |
 |---------|--------|--------|
 | NASA GLC | NASA Global Landslide Catalog | 2007–2018 |
-| GGIG | Global Geo-Intelligence Group | 2004–2023 |
+| GGIG | Guangzhou Institute of Geography, Guangdong Academy of Sciences (in collaboration with Guangdong Provincial Center for Geological Environment Monitoring) | 2017–2023 |
 | GFD | Global Fatal Landslide Database | 2004–2017 |
 | GFL | Global Fatal Landslide Database (extension) | 2004–2016 |
 | MODIS NDVI | MOD13A2.061 (250m, 16-day) | 2004–2023 |

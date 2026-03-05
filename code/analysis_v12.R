@@ -593,7 +593,7 @@ create_extended_data_table_1 <- function() {
       "Land Cover", "Land Cover", "Land Cover", "Forest Structure", "Forest Status"
     ),
     Source_Product_Name = c(
-      "NASA Global Landslide Catalog (GLC)", "e-ITALICA", "Guangzhou Institute of Geography Catalog",
+      "NASA Global Landslide Catalog (GLC)", "e-ITALICA", "GGIG Catalog (Guangzhou Inst. of Geography, GDAS)",
       "MODIS/061/MOD13Q1 (NDVI/EVI)", "MODIS/061/MOD15A2H (LAI/FAPAR)", "COPERNICUS/S2_SR_HARMONIZED",
       "ESA WorldCover", "MODIS/006/MCD12Q1", "COPERNICUS/Landcover/100m",
       "NASA/MEASURES/GFCC/TC/v3", "UMD/hansen/global_forest_change_2022_v1_10"
