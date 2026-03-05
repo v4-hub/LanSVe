@@ -1,94 +1,76 @@
-# LanSVeg: Code and Data for "The vegetation paradox predicts global landslide risk"
+# LanSVe: Landslide–Vegetation Interaction Analysis
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**A non-monotonic vegetation–landslide relationship revealed by global satellite observations: critical NDVI thresholds and pre-failure dynamics**
 
-This repository contains the full code and primary data necessary to reproduce the findings presented in our study, "The vegetation paradox predicts global landslide risk". The project investigates the complex, nonlinear relationship between vegetation health, as measured by various remote sensing indices, and the occurrence of landslides.
+## Overview
 
-Our framework leverages the Google Earth Engine (GEE) platform for large-scale geospatial data acquisition and the R programming language for in-depth statistical analysis and visualization. This repository is intended to provide complete transparency and facilitate the reproduction of our results by the scientific community.
+This repository contains the data, code, and supplementary materials for a global analysis of landslide–vegetation interactions using satellite-derived vegetation indices. Our analysis of 12,459 rainfall-triggered landslide events (2004–2023) reveals a non-monotonic relationship between vegetation density (NDVI) and landslide susceptibility, challenging the traditional assumption that denser vegetation monotonically stabilizes slopes.
 
-## System Requirements & Dependencies
+### Key Findings
 
-### 1. Google Earth Engine (Python)
+- **Vegetation Paradox**: Landslide susceptibility peaks at intermediate vegetation density (NDVI 0.769–0.868), defining a Critical Transition Zone (CTZ)
+- **Three Biophysical Zones**: Data-driven segmented regression identifies Instability-Dominated (IDZ), Critical Transition (CTZ), and Stability-Dominated (SDZ) zones
+- **Pre-failure Dynamics**: NDVI trajectories diverge 16–32 days before slope failure, offering potential early warning signals
+- **Global Robustness**: The non-monotonic pattern persists across biomes, climate zones, and slope gradients
 
-The data acquisition scripts (`01_*.py`, `02_*.py`) are designed to be run in a **Google Colab** environment, which pre-installs most necessary libraries.
+## Repository Structure
 
-- A Google Account with **Google Earth Engine access enabled**.
-- **Python 3.x**
-- Key Python libraries:
-  - `earthengine-api`
-  - `pandas`
-  - `numpy`
-  - `tqdm`
+```
+├── code/
+│   ├── analysis_v12.R                    # Main statistical analysis (R)
+│   ├── deep_validation_analyses.py       # Deep validation analyses (Python)
+│   ├── gee_extract_terrain_colab.py      # GEE terrain extraction (Colab)
+│   └── gee_extract_terrain_local.py      # GEE terrain extraction (local)
+├── data/
+│   └── landslide_data_with_terrain.csv   # Processed landslide dataset with terrain attributes
+├── figures/
+│   ├── fig1.png                          # Data-driven discovery of CTZ
+│   ├── fig2.png                          # Multi-scale validation
+│   ├── fig3.png                          # Pre-failure vegetation dynamics
+│   └── fig4.png                          # Mechanistic framework
+└── supplementary/
+    ├── Supplementary_Fig_*.png           # 9 supplementary figures
+    ├── Supplementary_Table_*.csv         # Supplementary statistical tables
+    ├── Grid_RF_*.csv                     # Random Forest model outputs
+    ├── RF_*.csv                          # Feature importance results
+    ├── GGIG_Catalog_Metadata.csv         # Data catalog metadata
+    ├── Slope_Stratified_Zone_Distribution.csv
+    └── Zone_NDVI_Change_Significance_Tests.csv
+```
 
-The scripts include `!pip install` commands to ensure all dependencies are met within the Colab environment.
+## Data Sources
 
-### 2. Data Analysis (R)
+| Dataset | Source | Period |
+|---------|--------|--------|
+| NASA GLC | NASA Global Landslide Catalog | 2007–2018 |
+| GGIG | Global Geo-Intelligence Group | 2004–2023 |
+| GFD | Global Fatal Landslide Database | 2004–2017 |
+| GFL | Global Fatal Landslide Database (extension) | 2004–2016 |
+| MODIS NDVI | MOD13A2.061 (250m, 16-day) | 2004–2023 |
+| SRTM DEM | 30m elevation data | — |
 
-The analysis script (`03_*.R`) was developed using **R version 4.2.0** or newer. It automatically handles the installation of required packages.
+## Requirements
 
-- **R** (>= 4.0)
-- **RStudio** (recommended)
-- Key R packages:
-  - `ggplot2`, `dplyr`, `tidyr` (for data manipulation and plotting)
-  - `randomForest` (for modeling)
-  - `segmented` (for breakpoint analysis)
-  - `patchwork` (for combining plots)
-  - `pROC`, `caret` (for model validation)
-  - A full list is available at the top of the `03_Data_analysis_final.R` script.
+### R (≥ 4.3)
 
-## Workflow and Instructions
+Key packages: `tidyverse`, `segmented`, `mgcv`, `ranger`, `sf`, `terra`, `ggplot2`
 
-To reproduce the results of this study, please follow the steps below in order.
+### Python (≥ 3.9)
 
-### Step 1: Set Up the Environment
+Key packages: `pandas`, `numpy`, `scipy`, `scikit-learn`, `ee` (Google Earth Engine)
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/v4-hub/LanSVeg.git
-    cd LanSVeg
-    ```
-2.  **Google Drive Setup:** Upload the `code` and `data` directories to your Google Drive. The Python scripts are configured to read from and write to Google Drive from within Google Colab.
+## Usage
 
-### Step 2: Data Acquisition with Google Earth Engine
+1. **Data Preparation**: Use `gee_extract_terrain_*.py` to extract terrain attributes via Google Earth Engine
+2. **Main Analysis**: Run `analysis_v12.R` for segmented regression, validation, and figure generation
+3. **Deep Validation**: Run `deep_validation_analyses.py` for additional robustness checks
 
-The following scripts must be run in **Google Colab**.
+## Citation
 
-1.  **Open and run `01_vegetation_extraction.py`:**
-    - This script will process the primary landslide inventory (`data/glc_merged_landslide_point.csv`).
-    - **Important:** You may need to update the file paths at the top of the script (`Config` class) to match the location in your Google Drive.
-    - It will generate a file named `landslide_with_vegetation_indices.csv` containing the landslide points annotated with pre-event vegetation indices.
+If you use this code or data, please cite:
 
-2.  **Open and run `02_landcover_extraction.py`:**
-    - This script also processes the primary landslide inventory.
-    - **Important:** Check and update file paths in the `Config` class as needed.
-    - It will generate `landslide_landcover_forest_data.csv`, containing land cover and forest characteristics for each landslide point.
-
-*Note: These scripts connect to the GEE and may take a significant amount of time to run, depending on the size of the input dataset. They include checkpointing to allow for restarting the process.*
-
-### Step 3: Data Analysis and Figure Generation
-
-After the data acquisition steps are complete, run the R script to perform the analysis.
-
-1.  **Prepare the Data:** Ensure the CSV files generated by the Python scripts are available in the working directory of the R project, or update the file paths within the R script accordingly. The R script is designed to intelligently find and load the correct processed data file.
-
-2.  **Run `03_Data_analysis_final.R`:**
-    - Open the script in RStudio.
-    - Execute the entire script from top to bottom.
-    - The script will automatically:
-      - Install any missing R packages.
-      - Preprocess and merge the datasets.
-      - Perform breakpoint analysis and risk zone identification.
-      - Conduct multi-source data validation.
-      - Train and evaluate predictive models.
-      - Generate all figures and tables presented in the paper.
-
-3.  **Check the Results:** All outputs will be saved in the `results/` directory, organized into `figures`, `tables`, and `data` subdirectories.
-
-## Contact
-
-For any questions regarding the code or data, please contact:
-**[yumakamiya]** - yuanshx@gmail.com
+> Shao et al. A non-monotonic vegetation–landslide relationship revealed by global satellite observations: critical NDVI thresholds and pre-failure dynamics. *One Earth* (under review).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE.md](LICENSE.md) file for details. You are free to use, modify, and distribute this code, provided the original source and authors are cited.
+This project is licensed under the MIT License. See individual data source licenses for data usage restrictions.

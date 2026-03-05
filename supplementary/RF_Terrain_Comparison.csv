@@ -1,0 +1,3 @@
+Model,R2_cv,RMSE_cv,N_features,N_events
+Without terrain,0.712,0.171,9,11194
+With terrain,0.717,0.170,14,11194
