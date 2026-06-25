@@ -1,3 +1,5 @@
-Model,R2_cv,RMSE_cv,N_features,N_events
-Without terrain,0.712,0.171,9,11194
-With terrain,0.717,0.170,14,11194
+Slope_Class,N_total,IDZ_n,IDZ_pct,CTZ_n,CTZ_pct,SDZ_n,SDZ_pct,KDE_peak_NDVI,Peak_in_CTZ
+<15°,3170,2298,72.5,528,16.7,344,10.9,0.591,No
+15–30°,5603,1900,33.9,1991,35.5,1712,30.6,0.867,Yes
+30–45°,3388,621,18.3,1508,44.5,1259,37.2,0.870,No
+>45°,283,58,20.5,114,40.3,111,39.2,0.870,No

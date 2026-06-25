@@ -1,4 +1,4 @@
-Comparison,U_statistic,p_value,effect_size_r,mean_1_pct,mean_2_pct,n_1,n_2,p_bonferroni
-IDZ vs CTZ,8480208,2.08e-05,0.053,-2.30,-1.65,4501,3981,6.24e-05
-IDZ vs SDZ,5426756,9.81e-104,0.284,-2.30,2.23,4501,3370,2.94e-103
-CTZ vs SDZ,3332214,1.86e-303,0.503,-1.65,2.23,3981,3370,5.58e-303
+"Zone","n","Apparent_terminal_step_dNDVI_1_2","Post_event_days_in_window1_median","Clean_terminal_step_dNDVI_2_3","Clean_anomaly_vs_NDVI_4_5","Clean_p_wilcoxon"
+"IDZ",4890,-0.0293,9,0.0015,0.0027,0.191
+"CTZ",4143,-0.0175,9,0.0084,-6e-04,0.335
+"SDZ",3426,0.0184,9,0.0032,-3e-04,0.0317

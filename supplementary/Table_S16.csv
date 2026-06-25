@@ -1,0 +1,2 @@
+"Statistic","Value","Expected","Variance","P_Value","N_Total","N_Effective","K_Neighbors","Interpretation"
+"Moran's I",0.624601897766484,-0.0002000400080016,3.48992586836533e-05,0,5000,1155,10,"Significant spatial autocorrelation detected"
