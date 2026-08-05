@@ -1,4 +1,0 @@
-Model,R2_train,R2_cv,RMSE_cv,N_features,N_events,Notes
-Without terrain,0.968,0.712,0.171,9,11194,pixel-level RF; train-CV gap typical of RF
-With terrain,0.968,0.717,0.17,14,11194,delta R2 = +0.005; slope ranked 10th/14
-Grid-based (0.5deg),0.842,0.446,1.088,10,364,"aggregation loss, not overfitting; n=364 cells"

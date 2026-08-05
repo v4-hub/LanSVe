@@ -25,3 +25,8 @@ Thumbs.db
 # Node
 node_modules/
 package-lock.json
+
+# Regenerated artifacts — these live in the Zenodo deposit, not the repo
+figures/
+supplementary/
+models_rev/

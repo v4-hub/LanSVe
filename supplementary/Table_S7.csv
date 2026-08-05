@@ -1,4 +1,0 @@
-Comparison,U_statistic,p_value,effect_size_r,mean_1_pct,mean_2_pct,n_1,n_2,p_bonferroni
-IDZ vs CTZ,8480208,2.08e-05,0.053,-2.30,-1.65,4501,3981,6.24e-05
-IDZ vs SDZ,5426756,9.81e-104,0.284,-2.30,2.23,4501,3370,2.94e-103
-CTZ vs SDZ,3332214,1.86e-303,0.503,-1.65,2.23,3981,3370,5.58e-303

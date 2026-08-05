@@ -1,145 +1,81 @@
-# Landslide susceptibility peaks at intermediate vegetation density: a global satellite analysis
+# LanSVe — Global satellite analysis of landslide susceptibility and vegetation density
 
-Data and code accompanying the manuscript:
+Code and data accompanying:
 
 > Yuan S., Wang Q., Gong Q., Gonzalez-Rodriguez M.A., Song G., Zong Y., Hao Y., Wang J., Chen Y.
-> *Landslide susceptibility peaks at intermediate vegetation density: a global satellite
-> analysis of critical NDVI thresholds.* iScience (under review).
+> **Global satellite analysis reveals landslide susceptibility peaks at intermediate vegetation density.**
+> *iScience* (accepted). Manuscript ID ISCIENCE-D-26-03863.
 
 Lead contact: Shaoxiong Yuan (yuanshx@gdas.ac.cn), Guangzhou Institute of Geography, GDAS.
 
----
+**The complete archive — code, data, main-text figures, supplementary figures S1–S10,
+supplementary tables S1–S16, and metadata — is on Zenodo:**
+[https://doi.org/10.5281/zenodo.21190727](https://doi.org/10.5281/zenodo.21190727)
 
-## Core finding
-
-Rainfall-triggered landslide susceptibility is **non-monotonic** (unimodal) in vegetation density.
-Susceptibility peaks within a **Critical Transition Zone (CTZ)** at NDVI 0.769–0.868, situated
-between a low-vegetation Increasing Danger Zone (IDZ) and a high-vegetation Stable Dense Zone (SDZ).
-
-| Quantity | Value |
-|---|---|
-| Events analysed (valid NDVI) | 12,459 of 18,028 (69.1%) |
-| BP1 (IDZ → CTZ) | 0.769  [95% BCa CI 0.756–0.783] |
-| BP2 (CTZ → SDZ) | 0.868  [95% BCa CI 0.859–0.876] |
-| Segmented regression fit | R² = 0.957 |
-| Zone shares (of analysed) | IDZ 39.3% · CTZ 33.2% · SDZ 27.5% |
-| CTZ share of full inventory | 23.0% |
-| Pixel RF spatial CV | R² = 0.712 (train 0.97) |
-| Grid RF (0.5°, n = 364) | R² = 0.446; PDP peak NDVI = 0.860 |
-
-**Note on pre-failure NDVI signal.** An earlier draft reported a pre-failure NDVI "early-warning"
-decline. `02_sensitivity_and_contamination.R` (Part B) shows this is an **artefact**: the terminal
-MOD13Q1 composite (nominally "0–16 d before failure") extends past the failure date for 96% of
-events (median 9 post-event days), capturing the fresh scar. Restricted to unambiguously
-pre-failure windows, the decline is not significant (IDZ p = 0.19, CTZ p = 0.34).
-**No early-warning claim is made.** The non-monotonic CTZ result is unaffected.
+This GitHub repository is a **code + data mirror** for convenient `git clone` and issue
+tracking. Figures, tables, and other paper materials are not duplicated here — please
+read them in the manuscript or download the full deposit from Zenodo.
 
 ---
 
-## Repository contents
+## What's in this repository
 
 ```
 data/
-  landslide_data_with_terrain.csv   18,028 rainfall-triggered landslides (2000–2024)
-                                     with pre-failure NDVI/EVI/LAI (5 windows, MODIS +
-                                     Sentinel-2), land cover, climate zone, SRTM terrain.
+  landslide_data_with_terrain.csv    18,028 rainfall-triggered landslides (2000–2024)
+                                     with pre-failure NDVI/EVI/LAI, land cover, climate
+                                     zone, SRTM terrain, and QA flags.
 
 code/
-  01_core_analysis.R                Segmented breakpoint detection + 10,000-resample
-                                     BCa bootstrap CIs. Single source of truth for BP1, BP2.
-                                     → models_rev/ (intermediate), supplementary/Table_S3.csv
+  01_core_analysis.R                 Segmented breakpoint detection + 10,000-resample
+                                     BCa bootstrap CIs. Single source of truth for
+                                     BP1 = 0.769 and BP2 = 0.868.
 
-  02_sensitivity_and_contamination.R
-                                     Part A: QA/bandwidth/noise sensitivity analyses.
-                                     Part B: compositing-contamination test (why we removed
-                                     the pre-failure "warning" claim).
-                                     → supplementary/Table_S13, S15, S16, S17.csv
+  02_sensitivity_and_contamination.R QA / bandwidth / sensor-noise sensitivity, and
+                                     the compositing-contamination test that led us to
+                                     retract the pre-failure "early-warning" claim.
 
-  03_main_figures.R                 All 4 main figures: Fig 1 (3-panel composite — global
-                                     map + breakpoints + zone bar), Fig 2 (multi-source
-                                     validation), Fig 3 (NDVI/climate/seasonal), Fig 4 (conceptual).
-                                     → figures/fig1.png, fig2.png, fig3.png, fig4.png
+  03_main_figures.R                  Regenerates the four main-text figures.
+  04_supplementary_figures.R         Regenerates supplementary Figures S1–S10.
+  05_grid_rf_validation.py           Grid (0.5°) Random Forest validation and terrain
+                                     robustness checks; supplementary tables.
 
-  04_supplementary_figures.R        Supplementary figures S1–S10: S1 (bootstrap), S2 (EVI/LAI),
-                                     S3-S5 (GAM), S6 (Sankey), S7 (climate zones),
-                                     S8 (QA/geographic robustness), S9 (sensor noise), S10 (contamination).
-                                     Also writes supplementary/Table_S3.csv.
-                                     → supplementary/Figure_S1–S10.png, Table_S3.csv
+  06_gee_data_collection.py          Documents how vegetation and terrain layers were
+                                     extracted from Google Earth Engine. Informational
+                                     only — outputs are already in data/.
 
-  05_grid_rf_validation.py          Grid-based RF validation (0.5° cells) + terrain
-                                     robustness RF + zone significance tests.
-                                     → supplementary/Table_S7–S11, S13, S14.csv
-
-  06_gee_data_collection.py         Documents how terrain and vegetation data were extracted
-                                     from Google Earth Engine. INFORMATIONAL ONLY — requires
-                                     GEE credentials. The output is already in data/.
-
-figures/
-  fig1.png  fig2.png  fig3.png  fig4.png   Main-text figures.
-  all regenerated by 03_main_figures.R
-
-supplementary/
-  Table_S1.csv  …  Table_S16.csv    Supplementary tables (see index below).
-  Figure_S1.png …  Figure_S10.png   Supplementary figures.
+run_all.sh                           Runs the R and Python pipeline end-to-end.
+LICENSE_CODE.txt   MIT (code)
+LICENSE_DATA.txt   CC-BY-4.0 (dataset — underlying catalogs retain their own licenses)
 ```
 
-### Supplementary table index (numbered to match the paper, by citation order)
-
-| Table | Contents | Generated by |
-|---|---|---|
-| S1  | Bootstrap CIs for the NDVI breakpoints | `01_core_analysis.R` |
-| S2  | NDVI–EVI consistency across zones | pre-computed |
-| S3  | Breakpoints across QA/geographic subsets | `04_supplementary_figures.R` |
-| S4  | Binning/bandwidth sensitivity | `02_sensitivity_and_contamination.R` |
-| S5  | MODIS NDVI sensor-noise propagation | `02_sensitivity_and_contamination.R` |
-| S6  | Compositing-contamination test | `02_sensitivity_and_contamination.R` |
-| S7  | Pairwise zone NDVI-change significance tests | `05_grid_rf_validation.py` |
-| S8  | Grid RF summary (R², RMSE, PDP peak) | `05_grid_rf_validation.py` |
-| S9  | Grid RF feature importance | `05_grid_rf_validation.py` |
-| S10 | Grid RF partial dependence on mean NDVI | `05_grid_rf_validation.py` |
-| S11 | RF feature importance with terrain | `05_grid_rf_validation.py` |
-| S12 | RF train vs. spatial-CV R² (terrain comparison) | `02_sensitivity_and_contamination.R` |
-| S13 | Slope-stratified zone distribution | `05_grid_rf_validation.py` |
-| S14 | GGIG Catalog metadata | `05_grid_rf_validation.py` |
-| S15 | Mann-Kendall trend tests per zone | pre-computed |
-| S16 | Moran's I spatial autocorrelation | pre-computed |
-
-Tables S2, S15, S16 are included as pre-computed static files.
-Supplementary figures S1–S10 are generated by `04_supplementary_figures.R`
-(S6 Sankey requires `ggalluvial`). A Normalized Frequency Ratio figure was
-removed in revision: a rigorous monthly-matched global NDVI background was not
-available, so the "elevated susceptibility is not a land-area exposure artefact"
-point is made by the grid-based Random Forest (per-area prediction) instead.
-The former global-inventory map is now panel (A) of main Figure 1.
+Figures and supplementary tables are produced into `figures/` and `supplementary/`
+subdirectories at run time (git-ignored); they are also archived on Zenodo above.
 
 ---
 
 ## Reproduction
 
-### Requirements
-
 ```
-R >= 4.3   segmented, randomForest, boot, mgcv, dplyr, ggplot2, patchwork, tidyr, scales
-         treemapify, cowplot (Fig2), sf + rnaturalearth + ggnewscale (Fig1 map), ggalluvial (Fig S7)
+R >= 4.3      segmented, randomForest, boot, mgcv, dplyr, ggplot2, patchwork, tidyr,
+              scales, treemapify, cowplot, sf, rnaturalearth, ggnewscale, ggalluvial
 Python >= 3.10   pandas, numpy, scipy, scikit-learn >= 1.0
 ```
 
-### One-shot run
-
 ```bash
-cd <deposit-root>
+git clone https://github.com/v4-hub/LanSVe.git
+cd LanSVe
 bash run_all.sh
 ```
 
-### Manual step-by-step (must run from deposit root)
+Or step-by-step (must run from repo root; scripts 03/04 depend on `models_rev/` from steps 1–2):
 
 ```bash
 Rscript code/01_core_analysis.R              # ~2–4 min (bootstrap)
 Rscript code/02_sensitivity_and_contamination.R
-Rscript code/03_main_figures.R               # requires models_rev/ from step 1
-Rscript code/04_supplementary_figures.R      # requires models_rev/ from steps 1+2
+Rscript code/03_main_figures.R
+Rscript code/04_supplementary_figures.R
 python3 code/05_grid_rf_validation.py        # ~5–10 min
-# 06_gee_data_collection.py is informational only
 ```
 
 ---
@@ -149,27 +85,28 @@ python3 code/05_grid_rf_validation.py        # ~5–10 min
 | Dataset | Source |
 |---|---|
 | NASA COOLR / Global Landslide Catalog | Kirschbaum et al. (2015) |
-| e-ITALICA catalog | Peruccacci et al. (2023) |
+| e-ITALICA catalog | Brunetti et al. (2025) |
 | GGIG catalog | Guangzhou Institute of Geography, GDAS |
-| MODIS MOD13Q1 (NDVI/EVI) | Didan (2015) |
-| MODIS MOD15A2H (LAI/FPAR) | Myneni et al. (2015) |
+| MODIS MOD13Q1 (NDVI / EVI) | Didan (2015) |
+| MODIS MOD15A2H (LAI / FPAR) | Myneni et al. (2015) |
 | MODIS MCD12Q1 (land cover) | Friedl & Sulla-Menashe (2019) |
-| Sentinel-2 L2A | ESA Copernicus (2015–2024) |
+| Sentinel-2 L2A | ESA Copernicus |
 | Copernicus CGLS-LC100 | Buchhorn et al. (2020) |
 | Hansen Global Forest Change | Hansen et al. (2013) |
 | SRTM 30 m DEM | Farr et al. (2007) |
 | MERIT Hydro (TWI, upslope area) | Yamazaki et al. (2019) |
-| Köppen-Geiger zones | Beck et al. (2018) |
+| Köppen-Geiger climate zones | Beck et al. (2018) |
+
+Please cite the original data providers when using the derived variables.
 
 ---
 
-## License
-
-- **Code**: MIT License (see `LICENSE_CODE.txt`)
-- **Data**: Creative Commons Attribution 4.0 (CC-BY-4.0, see `LICENSE_DATA.txt`).
-  Underlying catalogs retain their original licenses; please cite the original
-  data providers listed above.
-
 ## Citation
 
-Please cite the manuscript and this archive (Zenodo DOI: https://doi.org/10.5281/zenodo.20763295).
+If you use this code or data, please cite both the paper and the Zenodo archive:
+
+> Yuan S. et al. Global satellite analysis reveals landslide susceptibility peaks at
+> intermediate vegetation density. *iScience* (2026).
+
+> Yuan S. et al. LanSVe: Landslide Susceptibility and Vegetation — data and code.
+> Zenodo. [https://doi.org/10.5281/zenodo.21190727](https://doi.org/10.5281/zenodo.21190727)
